@@ -14,22 +14,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-class ScreenTwo extends StatefulWidget {
-  const ScreenTwo({super.key});
-
-  @override
-  Screen2State createState() => Screen2State();
-}
-
-class Screen2State extends State<ScreenTwo> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: const Text('Crear contacto'),
-          backgroundColor: Colors.blueAccent),
-    );    
-  }
-  
-}

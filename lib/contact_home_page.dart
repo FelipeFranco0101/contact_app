@@ -1,4 +1,4 @@
-import 'package:contact_app/main.dart';
+import 'package:contact_app/form_contact_page.dart';
 import 'package:flutter/material.dart';
 
 class ContactHomePages extends StatefulWidget {
@@ -33,7 +33,7 @@ class ContactHomeState extends State<ContactHomePages> {
       ),  
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ScreenTwo()))
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FormContact()))
         },
         label: const Text('Contact'),
         icon: const Icon(Icons.person_add),
