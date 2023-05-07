@@ -11,6 +11,7 @@ class FormContactState extends State<FormContact> {
   final _formKey = GlobalKey<FormState>();
   var nombresController = TextEditingController();
   var apellidosController = TextEditingController();
+  var telefonoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,23 @@ class FormContactState extends State<FormContact> {
                             onPressed: apellidosController.clear,
                           )),
                           validator: (value) {
-                            return (value!.isEmpty) ? 'Por favor ingrese un nombre' : null;
+                            return (value!.isEmpty) ? 'Por favor ingrese el apellido' : null;
+                          },
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: telefonoController,
+                        decoration: InputDecoration(
+                          labelText: 'Telefono',
+                          prefixIcon: const Icon(Icons.person),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: telefonoController.clear,
+                          )),
+                          validator: (value) {
+                            return (value!.isEmpty) ? 'Por favor ingrese el numero de telefono' : null;
                           },
                       ),
                       const SizedBox(height: 20.0),
@@ -70,8 +87,20 @@ class FormContactState extends State<FormContact> {
   OutlinedButton submitForm(BuildContext context) {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(minimumSize: const Size(200, 50)),
-      onPressed: null, 
+      onPressed: () {
+        (_formKey.currentState!.validate()) ? _showToast(context) : null;
+      }, 
       child: const Text('Submit form', style: TextStyle(fontWeight: FontWeight.bold))
+    );
+  }
+
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Processing Data'),
+        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
     );
   }
   
