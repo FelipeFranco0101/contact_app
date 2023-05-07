@@ -1,7 +1,11 @@
+import 'package:contact_app/models/contact.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
 class FormContact extends StatefulWidget {
-  const FormContact({super.key});
+  final Future<Database>? database;
+
+  const FormContact({super.key, this.database});
 
   @override
   FormContactState createState() => FormContactState();
@@ -102,6 +106,23 @@ class FormContactState extends State<FormContact> {
         action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
+    saveRecord(nombresController.text, apellidosController.text, telefonoController.text);
   }
   
+  void saveRecord(String nombres, String apellidos, String telefono) async {
+    var db = await widget.database;
+    await db?.insert(Contact.tableName,
+      Contact(id: -1, nombres: nombres, apellidos: apellidos, telefono: telefono).toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace
+    );
+
+    nombresController.text = "";
+    apellidosController.text = "";
+    telefonoController.text = "";
+
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(const SnackBar(content: Text("Data saved")));
+
+  }
 }

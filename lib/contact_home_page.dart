@@ -1,8 +1,11 @@
 import 'package:contact_app/form_contact_page.dart';
+import 'package:contact_app/main.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ContactHomePages extends StatefulWidget {
-  const ContactHomePages({super.key});
+  final Future<Database>? database;
+  const ContactHomePages({super.key, this.database});
 
   @override
   ContactHomeState createState() => ContactHomeState();
@@ -33,7 +36,7 @@ class ContactHomeState extends State<ContactHomePages> {
       ),  
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FormContact()))
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => FormContact(database: database,)))
         },
         label: const Text('Contact'),
         icon: const Icon(Icons.person_add),
