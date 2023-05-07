@@ -92,25 +92,19 @@ class FormContactState extends State<FormContact> {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(minimumSize: const Size(200, 50)),
       onPressed: () {
-        (_formKey.currentState!.validate()) ? _showToast(context) : null;
+        (_formKey.currentState!.validate()) ? _saveRecord() : null;
       }, 
       child: const Text('Submit form', style: TextStyle(fontWeight: FontWeight.bold))
     );
   }
-
-  void _showToast(BuildContext context) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        content: const Text('Processing Data'),
-        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
-    saveRecord(nombresController.text, apellidosController.text, telefonoController.text);
-  }
   
-  void saveRecord(String nombres, String apellidos, String telefono) async {
+  void _saveRecord() async {
     var db = await widget.database;
+
+    var nombres = nombresController.text;
+    var apellidos = apellidosController.text;
+    var telefono = telefonoController.text;
+
     await db?.insert(Contact.tableName,
       Contact(id: -1, nombres: nombres, apellidos: apellidos, telefono: telefono).toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace
@@ -120,9 +114,16 @@ class FormContactState extends State<FormContact> {
     apellidosController.text = "";
     telefonoController.text = "";
 
-    ScaffoldMessenger.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(const SnackBar(content: Text("Data saved")));
+    _showToast();
+  }
 
+  void _showToast() {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Processing Data'),
+        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
   }
 }
