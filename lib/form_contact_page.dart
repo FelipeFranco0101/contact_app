@@ -1,11 +1,14 @@
-import 'package:contact_app/models/contact.dart';
+import 'package:contact_app/models/Contact.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:intl/intl.dart' as intl;
 
 class FormContact extends StatefulWidget {
-  final Future<Database>? database;
+  final Database? database;
+  final String? appBarTitle;
+	final Contact? contactEdit;
 
-  const FormContact({super.key, this.database});
+  const FormContact({super.key, this.database, this.appBarTitle, this.contactEdit});
 
   @override
   FormContactState createState() => FormContactState();
@@ -16,14 +19,28 @@ class FormContactState extends State<FormContact> {
   var nombresController = TextEditingController();
   var apellidosController = TextEditingController();
   var telefonoController = TextEditingController();
+  var edadController = TextEditingController();
+  var emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Crear contacto'),
-          backgroundColor: Colors.blueAccent),
-          body: Container(
+          title: Text(widget.appBarTitle ?? 'Crear contacto'),
+          backgroundColor: Colors.blueAccent,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context, true);
+              setState(() {});
+            })),
+          body: WillPopScope(
+            onWillPop: () {
+              Navigator.pop(context, 'Back');
+              setState(() {});
+              return Future(() => false,);
+            },
+            child: Container(
             padding: const EdgeInsets.all(20.0),
             child: ListView(
               children: [
@@ -51,7 +68,7 @@ class FormContactState extends State<FormContact> {
                         controller: apellidosController,
                         decoration: InputDecoration(
                           labelText: 'Apellidos',
-                          prefixIcon: const Icon(Icons.person),
+                          prefixIcon: const Icon(Icons.person_2_outlined),
                           border: const OutlineInputBorder(),
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.clear),
@@ -67,7 +84,7 @@ class FormContactState extends State<FormContact> {
                         controller: telefonoController,
                         decoration: InputDecoration(
                           labelText: 'Telefono',
-                          prefixIcon: const Icon(Icons.person),
+                          prefixIcon: const Icon(Icons.phone_android_outlined),
                           border: const OutlineInputBorder(),
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.clear),
@@ -78,6 +95,49 @@ class FormContactState extends State<FormContact> {
                           },
                       ),
                       const SizedBox(height: 20.0),
+                      TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: edadController,
+                        decoration: InputDecoration(
+                          labelText: 'Edad',
+                          prefixIcon: const Icon(Icons.access_time_filled_outlined),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: edadController.clear,
+                          )
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Por favor, ingresa la edad';
+                          }
+                          if (int.tryParse(value) == null) {
+                            return 'Por favor, ingresa una edad válida';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextFormField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          prefixIcon: const Icon(Icons.email_outlined),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: emailController.clear,
+                          )),
+                        validator: (value) {
+                          if (value!.isEmpty ||
+                              !RegExp(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b') // validación de formato de email
+                                  .hasMatch(value)) {
+                            return 'Por favor, ingresa un email válido';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20.0),
                     ],
                   ),
                 ),
@@ -85,36 +145,60 @@ class FormContactState extends State<FormContact> {
               ],
             ),
           ),
+        )
     );    
   }
 
   OutlinedButton submitForm(BuildContext context) {
     return OutlinedButton(
-      style: OutlinedButton.styleFrom(minimumSize: const Size(200, 50)),
-      onPressed: () {
-        (_formKey.currentState!.validate()) ? _saveRecord() : null;
-      }, 
-      child: const Text('Submit form', style: TextStyle(fontWeight: FontWeight.bold))
-    );
+        style: OutlinedButton.styleFrom(minimumSize: const Size(200, 50)),
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            widget.contactEdit != null ? null /*updateContact()*/ : _saveRecord();
+          }
+          //(_formKey.currentState!.validate()) ? _saveRecord() : null;
+        },
+        child: Text(widget.contactEdit != null ? 'Update' : 'Submit form',
+            style: const TextStyle(fontWeight: FontWeight.bold)));
   }
   
   void _saveRecord() async {
-    var db = await widget.database;
+    var db =  widget.database;
 
     var nombres = nombresController.text;
     var apellidos = apellidosController.text;
     var telefono = telefonoController.text;
+    var edad = edadController.text;
+    var email = emailController.text;
 
-    await db?.insert(Contact.tableName,
-      Contact(id: -1, nombres: nombres, apellidos: apellidos, telefono: telefono).toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace
-    );
+    await db?.insert(
+        Contact.tableName,
+        Contact(
+                id: -1,
+                nombres: nombres,
+                apellidos: apellidos,
+                telefono: telefono,
+                edad: edad,
+                email: email)
+            .toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
 
     nombresController.text = "";
     apellidosController.text = "";
     telefonoController.text = "";
+    edadController.text = "";
+    emailController.text = "";
 
     _showToast();
+  }
+
+  int formatAge(String age) {
+    return age.isNotEmpty ? int.parse(age) : 0;
+  }
+
+  String formatPhone(String phone) {
+    final numberFormat = intl.NumberFormat('(###) ###-####', 'en_CO');
+    return phone.isNotEmpty ? numberFormat.format(phone) : phone;
   }
 
   void _showToast() {

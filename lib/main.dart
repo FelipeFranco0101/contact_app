@@ -1,25 +1,20 @@
 import 'package:contact_app/contact_home_page.dart';
-import 'package:contact_app/models/Contact.dart';
+import 'package:contact_app/database/database_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 void main() {
-  runApp(const MyApp());
   createDatabase();
+  runApp(const MyApp());
 }
 
-Future<Database>? database;
+Database? database;
+late DatabaseHelper databaseHelper;
 
 void createDatabase() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  database = openDatabase(join(await getDatabasesPath(), "contact_database.db"), version: 1,
-    onCreate: (db, version) => {
-      db.execute(Contact.createQuery)
-    }
-  );
-  print('DB LOCATION ${await getDatabasesPath()}');
+  databaseHelper = DatabaseHelper();
+  databaseHelper.initializeDB().then((value) => database = value);
 }
 
 class MyApp extends StatelessWidget {
