@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-void modificarPersona(int index, Persona persona) {
+  void modificarPersona(int index, Persona persona) {
     setState(() {
       personas[index] = persona;
       calcularPromedioEdad();
@@ -71,63 +71,64 @@ void modificarPersona(int index, Persona persona) {
       body: Column(
         children: [
           IconButton(
-        icon: Icon(Icons.edit),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              String nombre = ''; // Variable para almacenar el nombre
-              int edad = 0; // Variable para almacenar la edad
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  String nombre = ''; // Variable para almacenar el nombre
+                  int edad = 0; // Variable para almacenar la edad
 
-              return StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-                  return AlertDialog(
-                    title: Text('Modificar Persona'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextField(
-                          decoration: InputDecoration(labelText: 'Nombre'),
-                          onChanged: (value) {
-                            setState(() {
-                              nombre = value;
-                            });
-                          },
-                          controller: TextEditingController(text: nombre),
+                  return StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      return AlertDialog(
+                        title: Text('Modificar Persona'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              decoration: InputDecoration(labelText: 'Nombre'),
+                              onChanged: (value) {
+                                setState(() {
+                                  nombre = value;
+                                });
+                              },
+                              controller: TextEditingController(text: nombre),
+                            ),
+                            TextField(
+                              decoration: InputDecoration(labelText: 'Edad'),
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                setState(() {
+                                  edad = int.tryParse(value) ?? 0;
+                                });
+                              },
+                              controller:
+                                  TextEditingController(text: edad.toString()),
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'Edad'),
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            setState(() {
-                              edad = int.tryParse(value) ?? 0;
-                            });
-                          },
-                          controller: TextEditingController(text: edad.toString()),
-                        ),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        child: Text('Cancelar'),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      TextButton(
-                        child: Text('Guardar'),
-                        onPressed: () {
-                          modificarPersona(Persona(nombre: nombre, edad: edad));
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
+                        actions: [
+                          TextButton(
+                            child: Text('Cancelar'),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                          TextButton(
+                            child: Text('Guardar'),
+                            onPressed: () {
+                              modificarPersona(
+                                  0, Persona(nombre: nombre, edad: edad));
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
               );
             },
-          );
-        },
-      ),
-
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: personas.length,
@@ -224,3 +225,4 @@ class Persona {
 
   Persona({required this.nombre, required this.edad});
 }
+
