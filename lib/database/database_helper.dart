@@ -2,10 +2,12 @@ import 'package:contact_app/models/Contact.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DatabaseHelper {
-
   Future<Database> initializeDB() async {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
     String path = await getDatabasesPath();
     String contactDB = 'contact_database.db';
 
@@ -25,14 +27,16 @@ class DatabaseHelper {
 
   Future<int?> getCountContacts() async {
     final Database db = await initializeDB();
-    List<Map<String, dynamic>> amountContact = await db.rawQuery('SELECT COUNT(*) from ${Contact.tableName}');
+    List<Map<String, dynamic>> amountContact =
+        await db.rawQuery('SELECT COUNT(*) from ${Contact.tableName}');
     int? result = Sqflite.firstIntValue(amountContact);
     return result;
   }
 
   Future<int> updateContact(Contact contact) async {
     final Database db = await initializeDB();
-    var result = await db.update(Contact.tableName, contact.toMap(), where: 'id = ?', whereArgs: [contact.id]);
+    var result = await db.update(Contact.tableName, contact.toMap(),
+        where: 'id = ?', whereArgs: [contact.id]);
     return result;
   }
 }
