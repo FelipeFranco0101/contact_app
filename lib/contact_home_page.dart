@@ -91,7 +91,10 @@ class ContactHomeState extends State<ContactHomePages> {
   }
 
   void navigateToDetail(Contact contact, String title) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => FormContact(database: database, appBarTitle: title, contactEdit: contact),)).then((value) => reloadContacts());
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => FormContact(database: database, appBarTitle: title, contactEdit: contact),)).then((value) => {
+      reloadContacts(),
+      setState(() {})
+    });
   }
 
   double roundDouble(double value, int places) {
@@ -111,11 +114,13 @@ class ContactHomeState extends State<ContactHomePages> {
   getAmounPeople() async {
     final amount = await databaseHelper.getCountContacts();
     amountPeopel = amount!;
+    //setState(() {});
   }
 
   getAverage() async {
     final lstContact = await databaseHelper.retrieveContacs();
     promedioEdad = roundDouble(_calcularPromedioEdad(lstContact), 2);
+    //setState(() {});
   }
 
   reloadContacts() async {
