@@ -66,21 +66,45 @@ class ContactHomeState extends State<ContactHomePages> {
                     return Card(
                       color: Colors.white,
                       elevation: .5,
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor:
-                              Color((Random().nextDouble() * 0xFFFFFF).toInt())
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Color(
+                                      (Random().nextDouble() * 0xFFFFFF)
+                                          .toInt())
                                   .withOpacity(1.0),
-                          child:
-                              Text(contact.nombres[0] + contact.apellidos[0]),
-                        ),
-                        title: Text("${contact.nombres} ${contact.apellidos}"),
-                        subtitle: Text(
-                            "Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
-                        // onTap: () {
-                        //   debugPrint("Accion para editar el contacto");
-                        //   navigateToDetail(contact, 'Editar Contacto');
-                        // },
+                              child: Text(
+                                  contact.nombres[0] + contact.apellidos[0]),
+                            ),
+                            title:
+                                Text("${contact.nombres} ${contact.apellidos}"),
+                            subtitle: Text(
+                                "Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
+                            /* onTap: () {
+                              debugPrint("Accion para editar el contacto");
+                              navigateToDetail(contact, 'Editar Contacto');
+                            }, */
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              TextButton(
+                                child: const Text('EDITAR'),
+                                onPressed: () {
+                                  navigateToDetail(contact, 'Editar Contacto');
+                                },
+                              ),
+                              const SizedBox(width: 8),
+                              TextButton(
+                                child: const Text('BORRAR'),
+                                onPressed: () {/* Función de Manuela */},
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                          ),
+                        ],
                       ),
                     );
                   });
