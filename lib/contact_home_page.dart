@@ -106,7 +106,7 @@ class ContactHomeState extends State<ContactHomePages> {
     if (contacts.isEmpty) return 0.0;
     double sum = 0;
     for (var contact in contacts) {
-      sum += int.parse(contact.edad!.isNotEmpty ? contact.edad.toString() : "0");
+      sum += int.parse((contact.edad ?? "").isNotEmpty ? contact.edad.toString() : "0");
     }
     return sum / contacts.length;
   }

@@ -29,6 +29,7 @@ class FormContactState extends State<FormContact> {
   void initState() {
     super.initState();
     databaseHelper = DatabaseHelper();
+    fillFormContact();
   }
 
   @override
@@ -163,9 +164,8 @@ class FormContactState extends State<FormContact> {
         style: OutlinedButton.styleFrom(minimumSize: const Size(200, 50)),
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            widget.contactEdit != null ? null /*updateContact()*/ : _saveRecord();
+            widget.contactEdit != null ? updateContact() : _saveRecord();
           }
-          //(_formKey.currentState!.validate()) ? _saveRecord() : null;
         },
         child: Text(widget.contactEdit != null ? 'Update' : 'Submit form',
             style: const TextStyle(fontWeight: FontWeight.bold)));
@@ -198,7 +198,7 @@ class FormContactState extends State<FormContact> {
     edadController.text = "";
     emailController.text = "";
 
-    _showToast();
+    _showToast("Contacto creado con exito");
   }
 
   int formatAge(String age) {
@@ -210,18 +210,29 @@ class FormContactState extends State<FormContact> {
     return phone.isNotEmpty ? numberFormat.format(phone) : phone;
   }
 
-  void _showToast() {
+  void _showToast(String msg) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
-        content: const Text('Processing Data'),
+        content: Text(msg),
         action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }
 
   void updateContact() async {
-    var updateContact = Contact(id: widget.contactEdit!.id, nombres: nombresController.text, apellidos: apellidosController.text, telefono: telefonoController.text);
+    var updateContact = Contact(id: widget.contactEdit!.id, nombres: nombresController.text, apellidos: apellidosController.text, telefono: telefonoController.text, edad: edadController.text, email: emailController.text);
     await databaseHelper.updateContact(updateContact);
+    _showToast("Contacto actualizado con exito");
+  }
+
+  void fillFormContact() {
+    if (widget.contactEdit != null) {
+      nombresController.text = widget.contactEdit!.nombres;
+      apellidosController.text = widget.contactEdit!.apellidos;
+      telefonoController.text = widget.contactEdit!.telefono;
+      edadController.text = widget.contactEdit!.edad ?? "";
+      emailController.text = widget.contactEdit!.email ?? "";
+    }
   }
 }
