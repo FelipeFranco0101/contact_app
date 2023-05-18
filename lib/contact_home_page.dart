@@ -114,13 +114,13 @@ class ContactHomeState extends State<ContactHomePages> {
   getAmounPeople() async {
     final amount = await databaseHelper.getCountContacts();
     amountPeopel = amount!;
-    //setState(() {});
+    setState(() {});
   }
 
   getAverage() async {
     final lstContact = await databaseHelper.retrieveContacs();
     promedioEdad = roundDouble(_calcularPromedioEdad(lstContact), 2);
-    //setState(() {});
+    setState(() {});
   }
 
   reloadContacts() async {

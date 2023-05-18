@@ -2,6 +2,7 @@ import 'package:contact_app/models/Contact.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:contact_app/database/database_helper.dart';
 
 class FormContact extends StatefulWidget {
   final Database? database;
@@ -21,6 +22,14 @@ class FormContactState extends State<FormContact> {
   var telefonoController = TextEditingController();
   var edadController = TextEditingController();
   var emailController = TextEditingController();
+
+  late DatabaseHelper databaseHelper;
+
+  @override
+  void initState() {
+    super.initState();
+    databaseHelper = DatabaseHelper();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,5 +218,10 @@ class FormContactState extends State<FormContact> {
         action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
+  }
+
+  void updateContact() async {
+    var updateContact = Contact(id: widget.contactEdit!.id, nombres: nombresController.text, apellidos: apellidosController.text, telefono: telefonoController.text);
+    await databaseHelper.updateContact(updateContact);
   }
 }
