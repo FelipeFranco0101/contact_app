@@ -70,7 +70,7 @@ class ContactHomeState extends State<ContactHomePages> {
                     child: Text(contact.nombres[0]+contact.apellidos[0]),
                   ),
                   title: Text("${contact.nombres} ${contact.apellidos}"),
-                  subtitle: Text("Edad: ${contact.edad} \nCel: ${contact.telefono} \n Email: ${contact.email} "),),
+                  subtitle: Text("Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
                   onTap: () {
                     debugPrint("Accion para editar el contacto");
                     navigateToDetail(contact, 'Editar Contacto');
