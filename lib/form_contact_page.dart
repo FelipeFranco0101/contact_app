@@ -22,6 +22,7 @@ class FormContactState extends State<FormContact> {
   var telefonoController = TextEditingController();
   var edadController = TextEditingController();
   var emailController = TextEditingController();
+  Contact? updatedContact;
 
   late DatabaseHelper databaseHelper;
 
@@ -41,12 +42,12 @@ class FormContactState extends State<FormContact> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.pop(context, true);
+              Navigator.pop(context, updatedContact);
               setState(() {});
             })),
           body: WillPopScope(
             onWillPop: () {
-              Navigator.pop(context, 'Back');
+              Navigator.pop(context, updatedContact);
               setState(() {});
               return Future(() => false,);
             },
@@ -222,6 +223,7 @@ class FormContactState extends State<FormContact> {
 
   void updateContact() async {
     var updateContact = Contact(id: widget.contactEdit!.id, nombres: nombresController.text, apellidos: apellidosController.text, telefono: telefonoController.text, edad: edadController.text, email: emailController.text);
+    updatedContact = updateContact;
     await databaseHelper.updateContact(updateContact);
     _showToast("Contacto actualizado con exito");
   }

@@ -1,3 +1,4 @@
+import 'package:contact_app/delegates/search_contact_delegate.dart';
 import 'package:contact_app/form_contact_page.dart';
 import 'package:contact_app/main.dart';
 import 'package:contact_app/models/Contact.dart';
@@ -15,6 +16,7 @@ class ContactHomePages extends StatefulWidget {
 }
 
 class ContactHomeState extends State<ContactHomePages> {
+  List<Contact> listContact = List.empty(growable: true);
   late double promedioEdad = 0.0;
   late int amountPeopel = 0;
 
@@ -33,6 +35,17 @@ class ContactHomeState extends State<ContactHomePages> {
         title: Text('Contactos    media: $promedioEdad'),
         backgroundColor: Colors.teal,
         actions: [
+          Center(
+            child: IconButton(
+              onPressed: () {
+                showSearch(
+                  context: context,
+                  delegate: SearchContactDelegate(listContact, database)
+                ).then((value) => reloadContacts());
+              },
+              icon: const Icon(Icons.search),
+            ),
+          ),
           Center(
             child: badges.Badge(
               position: badges.BadgePosition.topEnd(top: -12, end: 18),
@@ -54,6 +67,7 @@ class ContactHomeState extends State<ContactHomePages> {
           }
           //getAmounPeople();
           List<Contact> lstContact = snapshot.data!;
+          listContact = snapshot.data!;
           //getAmounPeopleTest(lstContact.length);
           return ListView.builder(
             itemCount: lstContact.length,
@@ -61,6 +75,7 @@ class ContactHomeState extends State<ContactHomePages> {
               //amountPeopel = lstContact.length;
               //getAmounPeople();
               Contact contact = lstContact[index];
+              final id = contact.id;
               return Card(
                 color: Colors.white,
                 elevation: .5,
@@ -71,6 +86,10 @@ class ContactHomeState extends State<ContactHomePages> {
                   ),
                   title: Text("${contact.nombres} ${contact.apellidos}"),
                   subtitle: Text("Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
+                  trailing: IconButton(
+                          onPressed: () => deleteById(id),
+                          icon: const Icon(Icons.delete),
+                        ),
                   onTap: () {
                     debugPrint("Accion para editar el contacto");
                     navigateToDetail(contact, 'Editar Contacto');
@@ -121,6 +140,11 @@ class ContactHomeState extends State<ContactHomePages> {
     final lstContact = await databaseHelper.retrieveContacs();
     promedioEdad = roundDouble(_calcularPromedioEdad(lstContact), 2);
     setState(() {});
+  }
+
+  Future<void> deleteById(int id) async {
+    databaseHelper.deleteContact(id);
+    reloadContacts();
   }
 
   reloadContacts() async {

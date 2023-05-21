@@ -11,14 +11,14 @@ class Contact {
   static String createQuery = 'CREATE TABLE $tableName ($colId integer primary key AUTOINCREMENT, $colNombres TEXT, $colApellidos TEXT, $colTelefono TEXT, $colEdad TEXT, $colEmail TEXT)';
 
   final int id;
-  final String nombres;
+  String nombres;
   final String apellidos;
   final String telefono;
   final String? edad;
   final String? email;
 
 
-  const Contact({
+  Contact({
     required this.id,
     required this.nombres,
     required this.apellidos,
@@ -37,6 +37,9 @@ class Contact {
     };
   }
 
+  setNombres(String nuevosNombres) {
+    nombres = nuevosNombres;
+  }
 
   factory Contact.fromMap(Map<String, dynamic> map) {
     return Contact(id: map['id'], nombres: map['nombres'], apellidos: map['apellidos'], telefono: map['telefono'], edad: map['edad'], email: map['email'].toString());
