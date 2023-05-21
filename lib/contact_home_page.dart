@@ -15,8 +15,10 @@ class ContactHomePages extends StatefulWidget {
 }
 
 class ContactHomeState extends State<ContactHomePages> {
+  bool isFilter = false;
   late double promedioEdad = 0.0;
   late int amountPeopel = 0;
+  List<Contact> listContact = List.empty(growable: true);
 
   @override
   void initState() {
@@ -51,6 +53,7 @@ class ContactHomeState extends State<ContactHomePages> {
         child: Column(
           children: [
             TextField(
+              onChanged: (value) => _filterContact(value),
               decoration: InputDecoration(
                 contentPadding: const EdgeInsetsDirectional.symmetric(vertical: 10.0, horizontal: 15),
                 hintText: 'Buscar',
@@ -67,16 +70,16 @@ class ContactHomeState extends State<ContactHomePages> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                //getAmounPeople();
-                List<Contact> lstContact = snapshot.data!;
-                //getAmounPeopleTest(lstContact.length);
+                if (!isFilter) {
+                  listContact = snapshot.data!;
+                }
                 return Expanded(
                   child: ListView.builder(
-                    itemCount: lstContact.length,
+                    itemCount: listContact.length,
                     itemBuilder: (BuildContext context, int index) {
                       //amountPeopel = lstContact.length;
                       //getAmounPeople();
-                      Contact contact = lstContact[index];
+                      Contact contact = listContact[index];
                       final id = contact.id;
                       return Card(
                         color: Colors.white,
@@ -113,6 +116,23 @@ class ContactHomeState extends State<ContactHomePages> {
         icon: const Icon(Icons.person_add),
       )
     );
+  }
+
+  List<Contact> _filterContact(String enterKeyboard) {
+    List<Contact> result = [];
+    if (enterKeyboard.isEmpty) {
+      isFilter = false;
+      result = listContact;
+    } else {
+      isFilter = true;
+      result = listContact.where((element) => element.nombres.toLowerCase().trim().contains(enterKeyboard.toLowerCase().trim())).toList();
+    }
+
+  
+    setState(() {
+      listContact = result;
+    });
+    return listContact;
   }
 
   void navigateToDetail(Contact contact, String title) {
@@ -156,6 +176,7 @@ class ContactHomeState extends State<ContactHomePages> {
   reloadContacts() async {
     getAmounPeople();
     getAverage();
+    isFilter = false;
     setState(() {});
   }
 }
