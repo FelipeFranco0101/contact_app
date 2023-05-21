@@ -46,39 +46,64 @@ class ContactHomeState extends State<ContactHomePages> {
           )
         ],
       ),
-      body: FutureBuilder(
-        future: databaseHelper.retrieveContacs(), 
-        builder: (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          //getAmounPeople();
-          List<Contact> lstContact = snapshot.data!;
-          //getAmounPeopleTest(lstContact.length);
-          return ListView.builder(
-            itemCount: lstContact.length,
-            itemBuilder: (BuildContext context, int index) {
-              //amountPeopel = lstContact.length;
-              //getAmounPeople();
-              Contact contact = lstContact[index];
-              return Card(
-                color: Colors.white,
-                elevation: .5,
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
-                    child: Text(contact.nombres[0]+contact.apellidos[0]),
-                  ),
-                  title: Text("${contact.nombres} ${contact.apellidos}"),
-                  subtitle: Text("Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
-                  onTap: () {
-                    debugPrint("Accion para editar el contacto");
-                    navigateToDetail(contact, 'Editar Contacto');
-                  },
-                ),
-              );
-            });
-        }
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsetsDirectional.symmetric(vertical: 10.0, horizontal: 15),
+                hintText: 'Buscar',
+                suffixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: const BorderSide()
+                )
+              ),
+            ),
+            FutureBuilder(
+              future: databaseHelper.retrieveContacs(), 
+              builder: (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                //getAmounPeople();
+                List<Contact> lstContact = snapshot.data!;
+                //getAmounPeopleTest(lstContact.length);
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: lstContact.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      //amountPeopel = lstContact.length;
+                      //getAmounPeople();
+                      Contact contact = lstContact[index];
+                      final id = contact.id;
+                      return Card(
+                        color: Colors.white,
+                        elevation: .5,
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
+                            child: Text(contact.nombres[0]+contact.apellidos[0]),
+                          ),
+                          title: Text("${contact.nombres} ${contact.apellidos}"),
+                          subtitle: Text("Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
+                          trailing: IconButton(
+                            onPressed: () => deleteById(id),
+                            icon: const Icon(Icons.delete),
+                          ),
+                          onTap: () {
+                            debugPrint("Accion para editar el contacto");
+                            navigateToDetail(contact, 'Editar Contacto');
+                          },
+                        ),
+                      );
+                    }),
+                );
+              }
+            ),
+          ],
+        ),
       ),  
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => {
@@ -95,6 +120,11 @@ class ContactHomeState extends State<ContactHomePages> {
       reloadContacts(),
       setState(() {})
     });
+  }
+
+  Future<void> deleteById(int id) async {
+    databaseHelper.deleteContact(id);
+    reloadContacts();
   }
 
   double roundDouble(double value, int places) {

@@ -35,4 +35,10 @@ class DatabaseHelper {
     var result = await db.update(Contact.tableName, contact.toMap(), where: 'id = ?', whereArgs: [contact.id]);
     return result;
   }
+
+   Future<int> deleteContact(int id) async {
+    final Database db = await initializeDB();
+    var result = await db.delete(Contact.tableName, where: 'id = ?', whereArgs: [id]);
+    return result;
+  }
 }
