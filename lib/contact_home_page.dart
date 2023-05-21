@@ -15,111 +15,147 @@ class ContactHomePages extends StatefulWidget {
 }
 
 class ContactHomeState extends State<ContactHomePages> {
+  bool isFilter = false;
   late double promedioEdad = 0.0;
   late int amountPeopel = 0;
+  List<Contact> listContact = List.empty(growable: true);
 
   @override
   void initState() {
     super.initState();
     getAmounPeople();
     getAverage();
-    setState(() { });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Contactos    media: $promedioEdad'),
-        backgroundColor: Colors.teal,
-        actions: [
-          Center(
-            child: badges.Badge(
-              position: badges.BadgePosition.topEnd(top: -12, end: 18),
-              badgeContent: Text('$amountPeopel', style: const TextStyle(color: Colors.white),),
-              badgeStyle: const badges.BadgeStyle(
-                badgeColor: Colors.orange,
-                padding: EdgeInsets.all(5)
+        appBar: AppBar(
+          title: Text('Contactos    media: $promedioEdad'),
+          backgroundColor: Colors.teal,
+          actions: [
+            Center(
+              child: badges.Badge(
+                position: badges.BadgePosition.topEnd(top: -12, end: 18),
+                badgeContent: Text(
+                  '$amountPeopel',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                badgeStyle: const badges.BadgeStyle(
+                    badgeColor: Colors.orange, padding: EdgeInsets.all(5)),
+                child: const Icon(Icons.people),
               ),
-              child: const Icon(Icons.people),
-            ),
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsetsDirectional.symmetric(vertical: 10.0, horizontal: 15),
-                hintText: 'Buscar',
-                suffixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide()
-                )
-              ),
-            ),
-            FutureBuilder(
-              future: databaseHelper.retrieveContacs(), 
-              builder: (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                //getAmounPeople();
-                List<Contact> lstContact = snapshot.data!;
-                //getAmounPeopleTest(lstContact.length);
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: lstContact.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      //amountPeopel = lstContact.length;
-                      //getAmounPeople();
-                      Contact contact = lstContact[index];
-                      final id = contact.id;
-                      return Card(
-                        color: Colors.white,
-                        elevation: .5,
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
-                            child: Text(contact.nombres[0]+contact.apellidos[0]),
-                          ),
-                          title: Text("${contact.nombres} ${contact.apellidos}"),
-                          subtitle: Text("Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
-                          trailing: IconButton(
-                            onPressed: () => deleteById(id),
-                            icon: const Icon(Icons.delete),
-                          ),
-                          onTap: () {
-                            debugPrint("Accion para editar el contacto");
-                            navigateToDetail(contact, 'Editar Contacto');
-                          },
-                        ),
-                      );
-                    }),
-                );
-              }
-            ),
+            )
           ],
         ),
-      ),  
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => FormContact(database: database,))).then((value) => reloadContacts())
-        },
-        label: const Text('Contact'),
-        icon: const Icon(Icons.person_add),
-      )
-    );
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextField(
+                onChanged: (value) => _filterContact(value),
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsetsDirectional.symmetric(
+                        vertical: 10.0, horizontal: 15),
+                    hintText: 'Buscar',
+                    suffixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide())),
+              ),
+              FutureBuilder(
+                  future: databaseHelper.retrieveContacs(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Contact>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (!isFilter) {
+                      listContact = snapshot.data!;
+                    }
+                    return Expanded(
+                      child: ListView.builder(
+                          itemCount: listContact.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            //amountPeopel = lstContact.length;
+                            //getAmounPeople();
+                            Contact contact = listContact[index];
+                            final id = contact.id;
+                            return Card(
+                              color: Colors.white,
+                              elevation: .5,
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Color(
+                                          (Random().nextDouble() * 0xFFFFFF)
+                                              .toInt())
+                                      .withOpacity(1.0),
+                                  child: Text(contact.nombres[0] +
+                                      contact.apellidos[0]),
+                                ),
+                                title: Text(
+                                    "${contact.nombres} ${contact.apellidos}"),
+                                subtitle: Text(
+                                    "Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
+                                trailing: IconButton(
+                                  onPressed: () => deleteById(id),
+                                  icon: const Icon(Icons.delete),
+                                ),
+                                onTap: () {
+                                  debugPrint("Accion para editar el contacto");
+                                  navigateToDetail(contact, 'Editar Contacto');
+                                },
+                              ),
+                            );
+                          }),
+                    );
+                  }),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => {
+            Navigator.of(context)
+                .push(MaterialPageRoute(
+                    builder: (context) => FormContact(
+                          database: database,
+                        )))
+                .then((value) => reloadContacts())
+          },
+          label: const Text('Agregar'),
+          icon: const Icon(Icons.person_add),
+        ));
+  }
+
+  List<Contact> _filterContact(String enterKeyboard) {
+    List<Contact> result = [];
+    if (enterKeyboard.isEmpty) {
+      isFilter = false;
+      result = listContact;
+    } else {
+      isFilter = true;
+      result = listContact
+          .where((element) => element.nombres
+              .toLowerCase()
+              .trim()
+              .contains(enterKeyboard.toLowerCase().trim()))
+          .toList();
+    }
+
+    setState(() {
+      listContact = result;
+    });
+    return listContact;
   }
 
   void navigateToDetail(Contact contact, String title) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => FormContact(database: database, appBarTitle: title, contactEdit: contact),)).then((value) => {
-      reloadContacts(),
-      setState(() {})
-    });
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+          builder: (context) => FormContact(
+              database: database, appBarTitle: title, contactEdit: contact),
+        ))
+        .then((value) => {reloadContacts(), setState(() {})});
   }
 
   Future<void> deleteById(int id) async {
@@ -136,7 +172,8 @@ class ContactHomeState extends State<ContactHomePages> {
     if (contacts.isEmpty) return 0.0;
     double sum = 0;
     for (var contact in contacts) {
-      sum += int.parse((contact.edad ?? "").isNotEmpty ? contact.edad.toString() : "0");
+      sum += int.parse(
+          (contact.edad ?? "").isNotEmpty ? contact.edad.toString() : "0");
     }
     return sum / contacts.length;
   }
@@ -156,6 +193,7 @@ class ContactHomeState extends State<ContactHomePages> {
   reloadContacts() async {
     getAmounPeople();
     getAverage();
+    isFilter = false;
     setState(() {});
   }
 }
