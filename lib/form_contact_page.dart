@@ -1,15 +1,13 @@
 import 'package:contact_app/models/Contact.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:contact_app/database/database_helper.dart';
 
 class FormContact extends StatefulWidget {
-  final Database? database;
   final String? appBarTitle;
-	final Contact? contactEdit;
+  final Contact? contactEdit;
 
-  const FormContact({super.key, this.database, this.appBarTitle, this.contactEdit});
+  const FormContact({super.key, this.appBarTitle, this.contactEdit});
 
   @override
   FormContactState createState() => FormContactState();
@@ -28,29 +26,31 @@ class FormContactState extends State<FormContact> {
   @override
   void initState() {
     super.initState();
-    databaseHelper = DatabaseHelper();
+    //databaseHelper = DatabaseHelper();
     fillFormContact();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(widget.appBarTitle ?? 'Crear contacto'),
-          backgroundColor: Colors.blueAccent,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context, true);
-              setState(() {});
-            })),
-          body: WillPopScope(
-            onWillPop: () {
-              Navigator.pop(context, 'Back');
-              setState(() {});
-              return Future(() => false,);
-            },
-            child: Container(
+        appBar: AppBar(
+            title: Text(widget.appBarTitle ?? 'Crear contacto'),
+            backgroundColor: Colors.blueAccent,
+            leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context, true);
+                  setState(() {});
+                })),
+        body: WillPopScope(
+          onWillPop: () {
+            Navigator.pop(context, 'Back');
+            setState(() {});
+            return Future(
+              () => false,
+            );
+          },
+          child: Container(
             padding: const EdgeInsets.all(20.0),
             child: ListView(
               children: [
@@ -62,61 +62,60 @@ class FormContactState extends State<FormContact> {
                       TextFormField(
                         controller: nombresController,
                         decoration: InputDecoration(
-                          labelText: 'Nombres',
-                          prefixIcon: const Icon(Icons.person),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: nombresController.clear,
-                          )),
-                          validator: (value) {
-                            return (value!.isEmpty) ? 'Por favor ingrese un nombre' : null;
-                          },
+                            labelText: 'Nombres',
+                            prefixIcon: const Icon(Icons.person),
+                            border: const OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: nombresController.clear,
+                            )),
+                        validator: (value) {
+                          return (value!.isEmpty) ? 'Por favor ingrese un nombre' : null;
+                        },
                       ),
                       const SizedBox(height: 20.0),
                       TextFormField(
                         controller: apellidosController,
                         decoration: InputDecoration(
-                          labelText: 'Apellidos',
-                          prefixIcon: const Icon(Icons.person_2_outlined),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: apellidosController.clear,
-                          )),
-                          validator: (value) {
-                            return (value!.isEmpty) ? 'Por favor ingrese el apellido' : null;
-                          },
+                            labelText: 'Apellidos',
+                            prefixIcon: const Icon(Icons.person_2_outlined),
+                            border: const OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: apellidosController.clear,
+                            )),
+                        validator: (value) {
+                          return (value!.isEmpty) ? 'Por favor ingrese el apellido' : null;
+                        },
                       ),
                       const SizedBox(height: 20.0),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         controller: telefonoController,
                         decoration: InputDecoration(
-                          labelText: 'Telefono',
-                          prefixIcon: const Icon(Icons.phone_android_outlined),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: telefonoController.clear,
-                          )),
-                          validator: (value) {
-                            return (value!.isEmpty) ? 'Por favor ingrese el numero de telefono' : null;
-                          },
+                            labelText: 'Telefono',
+                            prefixIcon: const Icon(Icons.phone_android_outlined),
+                            border: const OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: telefonoController.clear,
+                            )),
+                        validator: (value) {
+                          return (value!.isEmpty) ? 'Por favor ingrese el numero de telefono' : null;
+                        },
                       ),
                       const SizedBox(height: 20.0),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         controller: edadController,
                         decoration: InputDecoration(
-                          labelText: 'Edad',
-                          prefixIcon: const Icon(Icons.access_time_filled_outlined),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: edadController.clear,
-                          )
-                        ),
+                            labelText: 'Edad',
+                            prefixIcon: const Icon(Icons.access_time_filled_outlined),
+                            border: const OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: edadController.clear,
+                            )),
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Por favor, ingresa la edad';
@@ -131,13 +130,13 @@ class FormContactState extends State<FormContact> {
                       TextFormField(
                         controller: emailController,
                         decoration: InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: const Icon(Icons.email_outlined),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: emailController.clear,
-                          )),
+                            labelText: 'Email',
+                            prefixIcon: const Icon(Icons.email_outlined),
+                            border: const OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: emailController.clear,
+                            )),
                         validator: (value) {
                           if (value!.isEmpty ||
                               !RegExp(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b') // validación de formato de email
@@ -155,8 +154,7 @@ class FormContactState extends State<FormContact> {
               ],
             ),
           ),
-        )
-    );    
+        ));
   }
 
   OutlinedButton submitForm(BuildContext context) {
@@ -167,12 +165,19 @@ class FormContactState extends State<FormContact> {
             widget.contactEdit != null ? updateContact() : _saveRecord();
           }
         },
-        child: Text(widget.contactEdit != null ? 'Update' : 'Submit form',
-            style: const TextStyle(fontWeight: FontWeight.bold)));
+        child: Text(widget.contactEdit != null ? 'Update' : 'Submit form', style: const TextStyle(fontWeight: FontWeight.bold)));
   }
-  
+
   void _saveRecord() async {
-    var db =  widget.database;
+    DateTime dateUpdateAt = DateTime.now();
+    var nombres = nombresController.text;
+    var apellidos = apellidosController.text;
+    var telefono = telefonoController.text;
+    var edad = edadController.text;
+    var email = emailController.text;
+    var newContact = Contact(id: -1, nombres: nombres, apellidos: apellidos, telefono: telefono, edad: edad, email: email, updateAt: dateUpdateAt);
+    await DatabaseHelper.instance.insertContact(newContact);
+    /*var db = widget.database;
 
     var nombres = nombresController.text;
     var apellidos = apellidosController.text;
@@ -191,6 +196,7 @@ class FormContactState extends State<FormContact> {
                 email: email)
             .toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+    */
 
     nombresController.text = "";
     apellidosController.text = "";
@@ -221,7 +227,14 @@ class FormContactState extends State<FormContact> {
   }
 
   void updateContact() async {
-    var updateContact = Contact(id: widget.contactEdit!.id, nombres: nombresController.text, apellidos: apellidosController.text, telefono: telefonoController.text, edad: edadController.text, email: emailController.text);
+    var updateContact = Contact(
+        id: widget.contactEdit!.id,
+        nombres: nombresController.text,
+        apellidos: apellidosController.text,
+        telefono: telefonoController.text,
+        edad: edadController.text,
+        email: emailController.text,
+        updateAt: DateTime.now());
     await databaseHelper.updateContact(updateContact);
     _showToast("Contacto actualizado con exito");
   }

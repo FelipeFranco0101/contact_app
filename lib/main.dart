@@ -13,7 +13,9 @@ late DatabaseHelper databaseHelper;
 
 void createDatabase() async {
   WidgetsFlutterBinding.ensureInitialized();
-  databaseHelper = DatabaseHelper();
+  databaseHelper = DatabaseHelper.instance;
+  // Inicializar la base de datos
+  await DatabaseHelper.instance.initializeDB().then((value) => database = value);
   databaseHelper.initializeDB().then((value) => database = value);
 }
 
@@ -25,7 +27,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ContactHomePages(database: database,),
+      home: ContactHomePages(
+        database: database,
+      ),
     );
   }
 }
