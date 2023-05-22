@@ -1,182 +1,237 @@
-import 'package:contact_app/form_contact_page.dart';
-import 'package:contact_app/main.dart';
-import 'package:contact_app/models/Contact.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'dart:math';
-import 'package:badges/badges.dart' as badges;
 
 class ContactHomePages extends StatefulWidget {
   final Database? database;
   const ContactHomePages({super.key, this.database});
 
   @override
-  ContactHomeState createState() => ContactHomeState();
+  State<ContactHomePages> createState() => _ContactHomeState();
 }
 
-class ContactHomeState extends State<ContactHomePages> {
-  bool isFilter = false;
-  late double promedioEdad = 0.0;
-  late int amountPeopel = 0;
-  List<Contact> listContact = List.empty(growable: true);
-
-  @override
-  void initState() {
-    super.initState();
-    getAmounPeople();
-    getAverage();
-    setState(() { });
-  }
+class _ContactHomeState extends State<ContactHomePages> {
+  double _availableScreenWidth = 0;
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    _availableScreenWidth = MediaQuery.of(context).size.width - 50;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Contactos    media: $promedioEdad'),
-        backgroundColor: Colors.teal,
-        actions: [
-          Center(
-            child: badges.Badge(
-              position: badges.BadgePosition.topEnd(top: -12, end: 18),
-              badgeContent: Text('$amountPeopel', style: const TextStyle(color: Colors.white),),
-              badgeStyle: const badges.BadgeStyle(
-                badgeColor: Colors.orange,
-                padding: EdgeInsets.all(5)
+      backgroundColor: Colors.grey[100],
+      body: Column(children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
+          alignment: Alignment.bottomCenter,
+          height: 170,
+          decoration: BoxDecoration(color: Colors.blue.shade800),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+            const Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Felipe', 
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)
+                ),
+                Text(
+                  'Felipe Sub', 
+                  style: TextStyle(fontSize: 17, color: Colors.white)
+                ),
+              ],
+            ),
+            Row(children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.black.withOpacity(.1)),
+                child: IconButton(
+                  onPressed: () {}, 
+                  icon: const Icon(Icons.search, size: 28, color: Colors.white,),
+                ),
               ),
-              child: const Icon(Icons.people),
+              const SizedBox(width: 10,),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.black.withOpacity(.1)),
+                child: IconButton(
+                  onPressed: () {}, 
+                  icon: const Icon(Icons.people, size: 28, color: Colors.white,),
+                ),
+              )
+            ]),
+          ]),
+        ),
+        const SizedBox(
+          height: 25,
+        ),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(25),
+            children: [
+              const Text('Ultimos actualizados', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),),
+              const SizedBox(height: 15,),
+              Row(
+                children: [
+                  buildRecentlyUpdateContacts('Felipe', '20/05/2023'),
+                  SizedBox(width: _availableScreenWidth *.03,),
+                  buildRecentlyUpdateContacts('Felipe', '20/05/2023'),
+                  SizedBox(width: _availableScreenWidth *.03,),
+                  buildRecentlyUpdateContacts('Felipe', '20/05/2023')
+                ],
+              ),
+              const Divider(height: 60,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Contacts',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      debugPrint('Siii');
+                    },
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Text(
+                        'New Contacts',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),  
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20,),
+
+              buildListContacts('Felipe'),
+              buildListContacts('Manu'),
+              buildListContacts('Rachel'),
+              buildListContacts('Salo'),
+          ],)
+        ) 
+      ]),
+
+      floatingActionButton: Container(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          boxShadow: [
+           BoxShadow(color: Colors.white, spreadRadius: 7, blurRadius: 1) 
+          ]
+        ),
+        child: FloatingActionButton(
+          onPressed: () {},
+          child: const Icon(Icons.add),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (index) {
+          debugPrint(index.toString());
+          setState(() {
+            _selectedIndex = index;
+          });
+          debugPrint(_selectedIndex.toString());
+        },
+        currentIndex: _selectedIndex,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.access_time),
+            label: 'Time',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_box),
+            label: 'Folder',
+          ),
+        ]
+      ),
+    );
+  }
+
+  Container buildListContacts(String nombres) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      height: 65,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.folder,
+                color: Colors.blue[200],
+              ),
+              const SizedBox(
+                width: 12,
+              ),
+              Text(
+                nombres,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.more_vert_rounded,
+              color: Colors.grey,
             ),
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TextField(
-              onChanged: (value) => _filterContact(value),
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsetsDirectional.symmetric(vertical: 10.0, horizontal: 15),
-                hintText: 'Buscar',
-                suffixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide()
-                )
-              ),
-            ),
-            FutureBuilder(
-              future: databaseHelper.retrieveContacs(), 
-              builder: (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (!isFilter) {
-                  listContact = snapshot.data!;
-                }
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: listContact.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      //amountPeopel = lstContact.length;
-                      //getAmounPeople();
-                      Contact contact = listContact[index];
-                      final id = contact.id;
-                      return Card(
-                        color: Colors.white,
-                        elevation: .5,
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
-                            child: Text(contact.nombres[0]+contact.apellidos[0]),
-                          ),
-                          title: Text("${contact.nombres} ${contact.apellidos}"),
-                          subtitle: Text("Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
-                          trailing: IconButton(
-                            onPressed: () => deleteById(id),
-                            icon: const Icon(Icons.delete),
-                          ),
-                          onTap: () {
-                            debugPrint("Accion para editar el contacto");
-                            navigateToDetail(contact, 'Editar Contacto');
-                          },
-                        ),
-                      );
-                    }),
-                );
-              }
-            ),
-          ],
-        ),
-      ),  
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => FormContact(database: database,))).then((value) => reloadContacts())
-        },
-        label: const Text('Contact'),
-        icon: const Icon(Icons.person_add),
-      )
     );
   }
 
-  List<Contact> _filterContact(String enterKeyboard) {
-    List<Contact> result = [];
-    if (enterKeyboard.isEmpty) {
-      isFilter = false;
-      result = listContact;
-    } else {
-      isFilter = true;
-      result = listContact.where((element) => element.nombres.toLowerCase().trim().contains(enterKeyboard.toLowerCase().trim())).toList();
-    }
-
-  
-    setState(() {
-      listContact = result;
-    });
-    return listContact;
-  }
-
-  void navigateToDetail(Contact contact, String title) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => FormContact(database: database, appBarTitle: title, contactEdit: contact),)).then((value) => {
-      reloadContacts(),
-      setState(() {})
-    });
-  }
-
-  Future<void> deleteById(int id) async {
-    databaseHelper.deleteContact(id);
-    reloadContacts();
-  }
-
-  double roundDouble(double value, int places) {
-    num mod = pow(10.0, places);
-    return ((value * mod).round().toDouble() / mod);
-  }
-
-  double _calcularPromedioEdad(List<Contact> contacts) {
-    if (contacts.isEmpty) return 0.0;
-    double sum = 0;
-    for (var contact in contacts) {
-      sum += int.parse((contact.edad ?? "").isNotEmpty ? contact.edad.toString() : "0");
-    }
-    return sum / contacts.length;
-  }
-
-  getAmounPeople() async {
-    final amount = await databaseHelper.getCountContacts();
-    amountPeopel = amount!;
-    setState(() {});
-  }
-
-  getAverage() async {
-    final lstContact = await databaseHelper.retrieveContacs();
-    promedioEdad = roundDouble(_calcularPromedioEdad(lstContact), 2);
-    setState(() {});
-  }
-
-  reloadContacts() async {
-    getAmounPeople();
-    getAverage();
-    isFilter = false;
-    setState(() {});
+  Column buildRecentlyUpdateContacts(String nombres, String fecha) {
+    return Column(
+      children: [
+        Container(
+          width: _availableScreenWidth *.31,
+          decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(15)),
+          padding: const EdgeInsets.all(38),
+          height: 110,
+          child: const Icon(Icons.man),
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        RichText(
+          text: TextSpan(
+              text: nombres,
+              style: const TextStyle(color: Colors.black, fontSize: 14),
+              children: [
+                TextSpan(
+                  text: fecha,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 12,
+                  ),
+                ),
+              ]),
+        ),
+      ],
+    );
   }
 }
