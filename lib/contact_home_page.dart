@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:contact_app/database/database_helper.dart';
 import 'package:contact_app/form_contact_page.dart';
 import 'package:contact_app/models/Contact.dart';
@@ -15,6 +16,8 @@ class ContactHomePages extends StatefulWidget {
 class _ContactHomeState extends State<ContactHomePages> {
   double _availableScreenWidth = 0;
   int _selectedIndex = 0;
+  int amountContact = 0;
+  List<Contact> listUpdatedContact = List.empty(growable: true);
   List<Contact> listContact = List.empty(growable: true);
 
   void prueba() async {
@@ -24,10 +27,34 @@ class _ContactHomeState extends State<ContactHomePages> {
     debugPrint(a.toString());
   }
 
+  String getSaludo() {
+    var horaActual = DateTime.now().hour;
+
+    if (horaActual >= 5 && horaActual < 12) {
+      return 'Buenos días';
+    } else if (horaActual >= 12 && horaActual < 18) {
+      return 'Buenas tardes';
+    } else {
+      return 'Buenas noches';
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    countContactCreated();
+  }
+
+  void countContactCreated() async {
+    await DatabaseHelper.instance.getCountContacts().then((value) => setState(() {
+          amountContact = value ?? 0;
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
     _availableScreenWidth = MediaQuery.of(context).size.width - 50;
-    prueba();
+    //prueba();
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: Column(children: [
@@ -37,12 +64,12 @@ class _ContactHomeState extends State<ContactHomePages> {
           height: 170,
           decoration: BoxDecoration(color: Colors.blue.shade800),
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Column(
+            Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Felipe', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)),
-                Text('Felipe Sub', style: TextStyle(fontSize: 17, color: Colors.white)),
+                const Text('Contact App', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)),
+                Text(getSaludo(), style: const TextStyle(fontSize: 17, color: Colors.white)),
               ],
             ),
             Row(children: [
@@ -62,103 +89,85 @@ class _ContactHomeState extends State<ContactHomePages> {
               ),
               Container(
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.black.withOpacity(.1)),
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.people,
-                    size: 28,
-                    color: Colors.white,
-                  ),
+                child: Stack(
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.people,
+                        size: 28,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Positioned(
+                      top: 5,
+                      right: 2,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: Text(
+                          '$amountContact', // Número de notificaciones
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               )
             ]),
           ]),
         ),
-        const SizedBox(
-          height: 5,
-        ),
-        Expanded(
-          child: ListView(
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(25),
+        containerRecentlyUpdateContact(),
+        Container(
+          padding: const EdgeInsets.all(25),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Ultimos actualizados',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  //buildRecentlyUpdateContactsList(),
-                  buildRecentlyUpdateContacts('Felipe', '20/05/2023'),
-                  SizedBox(
-                    width: _availableScreenWidth * .03,
+                  const Text(
+                    'Contacts',
+                    style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  buildRecentlyUpdateContacts('Felipe', '20/05/2023'),
-                  SizedBox(
-                    width: _availableScreenWidth * .03,
+                  InkWell(
+                    onTap: () {
+                      debugPrint('Siii');
+                    },
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Text(
+                        'New Contacts',
+                        style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
-                  buildRecentlyUpdateContacts('Felipe', '20/05/2023')
                 ],
-              ),
-              const Divider(
-                height: 60,
               ),
             ],
           ),
         ),
-        Expanded(
-            child: ListView(
-          padding: const EdgeInsets.all(25),
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Contacts',
-                  style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                InkWell(
-                  onTap: () {
-                    debugPrint('Siii');
-                  },
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: const Text(
-                      'New Contacts',
-                      style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            buildListContacts('Felipe'),
-            buildListContacts('Manu'),
-            buildListContacts('Rachel'),
-            buildListContacts('Salo'),
-          ],
-        )),
+        buildlistContactsList(),
       ]),
       floatingActionButton: Container(
         decoration: const BoxDecoration(shape: BoxShape.circle, boxShadow: [BoxShadow(color: Colors.white, spreadRadius: 7, blurRadius: 1)]),
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(
-                    builder: (context) => const FormContact(
-                          appBarTitle: 'Nuevo contacto',
-                        )))
-                .then((value) => setState(() {}));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FormContact(appBarTitle: 'Nuevo contacto'))).then((value) => setState(() => countContactCreated()));
           },
           child: const Icon(Icons.add),
         ),
@@ -177,14 +186,133 @@ class _ContactHomeState extends State<ContactHomePages> {
           showUnselectedLabels: false,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.access_time),
+              icon: Icon(Icons.list),
               label: 'Time',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add_box),
+              icon: Icon(Icons.show_chart),
               label: 'Folder',
             ),
           ]),
+    );
+  }
+
+  /*Widget buildlistContactsList() {
+    return Expanded(
+        child: ListView(
+      padding: const EdgeInsets.all(25),
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Contacts',
+              style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            InkWell(
+              onTap: () {
+                debugPrint('Siii');
+              },
+              child: Ink(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: const Text(
+                  'New Contacts',
+                  style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        buildListContacts('Felipe'),
+        buildListContacts('Manu'),
+        buildListContacts('Rachel'),
+        buildListContacts('Salo'),
+      ],
+    ));
+  }*/
+
+  Widget containerRecentlyUpdateContact() {
+    if (amountContact > 0) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Ultimos actualizados',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Row(
+              children: [
+                buildRecentlyUpdateContactsList(),
+              ],
+            ),
+            const Divider(
+              height: 5,
+            ),
+          ],
+        ),
+      );
+    }
+    return Container();
+  }
+
+  Widget buildlistContactsList() {
+    return FutureBuilder(
+        future: DatabaseHelper.instance.retrieveContacs(),
+        builder: (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          listContact = snapshot.data!;
+          return Expanded(
+            child: ListView.builder(
+              itemCount: listContact.length,
+              itemBuilder: (BuildContext context, int index) {
+                Contact contact = listContact[index];
+                return buildListContactsCard(contact);
+              },
+            ),
+          );
+        });
+  }
+
+  Widget buildListContactsCard(Contact contact) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 8),
+        //color: Colors.grey.shade200,
+        elevation: .5,
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
+            child: Text(contact.nombres[0] + contact.apellidos[0]),
+          ),
+          title: Text("${contact.nombres} ${contact.apellidos}"),
+          subtitle: Text("Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
+          trailing: IconButton(
+            onPressed: () => deleteById(contact.id),
+            icon: const Icon(Icons.delete),
+          ),
+          onTap: () {
+            debugPrint("Accion para editar el contacto");
+            navigateToDetail(contact, 'Editar Contacto');
+          },
+        ),
+      ),
     );
   }
 
@@ -227,7 +355,7 @@ class _ContactHomeState extends State<ContactHomePages> {
     );
   }
 
-  FutureBuilder<List<Contact>> buildRecentlyUpdateContactsList() {
+  /*FutureBuilder<List<Contact>> buildRecentlyUpdateContactsList() {
     return FutureBuilder(
         future: DatabaseHelper.instance.getRecentlyUpdate(),
         builder: (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
@@ -235,44 +363,77 @@ class _ContactHomeState extends State<ContactHomePages> {
             return const Center();
           }
           listContact = snapshot.data!.getRange(0, 1).toList();
-          return ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(25),
-            itemCount: listContact.length,
-            itemBuilder: (BuildContext context, int index) {
-              Contact contact = listContact[index];
-              mostar(contact);
-              return Card();
-            },
+          return Expanded(
+            child: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(25),
+              itemCount: listContact.length,
+              itemBuilder: (BuildContext context, int index) {
+                Contact contact = listContact[index];
+                mostar(contact);
+                return buildRecentlyUpdateContacts(contact.nombres, 'asd/asd/asd');
+              },
+            ),
+          );
+        });
+  }*/
+
+  Widget buildRecentlyUpdateContactsList() {
+    return FutureBuilder(
+        future: DatabaseHelper.instance.getRecentlyUpdate(),
+        builder: (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          listUpdatedContact = snapshot.data!;
+          return Expanded(
+            child: SizedBox(
+              height: 150,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                //shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                //padding: const EdgeInsets.all(25),
+                itemCount: listUpdatedContact.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Contact contact = listUpdatedContact[index];
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      buildRecentlyUpdateContacts(contact.nombres, contact.updateAt),
+                      SizedBox(
+                        width: _availableScreenWidth * .03,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           );
         });
   }
 
-  void mostar(Contact contact) {
-    debugPrint(contact.toString());
-  }
-
-  Column buildRecentlyUpdateContacts(String nombres, String fecha) {
+  Column buildRecentlyUpdateContacts(String nombres, DateTime? fecha) {
     return Column(
       children: [
         Container(
           width: _availableScreenWidth * .31,
           decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(15)),
           padding: const EdgeInsets.all(38),
-          height: 110,
+          height: 90,
           child: const Icon(Icons.man),
         ),
         const SizedBox(
           height: 15,
         ),
         RichText(
-          text: TextSpan(text: nombres, style: const TextStyle(color: Colors.black, fontSize: 14), children: [
+          text: TextSpan(text: nombres, style: const TextStyle(color: Colors.black, fontSize: 12), children: [
             TextSpan(
-              text: fecha,
+              text: fecha != null ? ' | ${fecha.toIso8601String().split('T').first}' : '',
               style: const TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.w300,
-                fontSize: 12,
+                fontSize: 10,
               ),
             ),
           ]),
@@ -282,10 +443,17 @@ class _ContactHomeState extends State<ContactHomePages> {
   }
 
   void navigateToDetail(Contact contact, String title) {
+    //Navigator.pushNamed(context, FormContact.route, arguments: contact).then((value) => setState(() {}));
     Navigator.of(context)
         .push(MaterialPageRoute(
           builder: (context) => FormContact(appBarTitle: title, contactEdit: contact),
         ))
         .then((value) => {setState(() {})});
+  }
+
+  void deleteById(int id) async {
+    await DatabaseHelper.instance.deleteContact(id);
+    countContactCreated();
+    //reloadContacts();
   }
 }

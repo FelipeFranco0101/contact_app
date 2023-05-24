@@ -4,6 +4,7 @@ import 'package:intl/intl.dart' as intl;
 import 'package:contact_app/database/database_helper.dart';
 
 class FormContact extends StatefulWidget {
+  static const String route = '/createOrUpdate';
   final String? appBarTitle;
   final Contact? contactEdit;
 
@@ -177,26 +178,6 @@ class FormContactState extends State<FormContact> {
     var email = emailController.text;
     var newContact = Contact(id: -1, nombres: nombres, apellidos: apellidos, telefono: telefono, edad: edad, email: email, updateAt: dateUpdateAt);
     await DatabaseHelper.instance.insertContact(newContact);
-    /*var db = widget.database;
-
-    var nombres = nombresController.text;
-    var apellidos = apellidosController.text;
-    var telefono = telefonoController.text;
-    var edad = edadController.text;
-    var email = emailController.text;
-
-    await db?.insert(
-        Contact.tableName,
-        Contact(
-                id: -1,
-                nombres: nombres,
-                apellidos: apellidos,
-                telefono: telefono,
-                edad: edad,
-                email: email)
-            .toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
-    */
 
     nombresController.text = "";
     apellidosController.text = "";
@@ -235,8 +216,10 @@ class FormContactState extends State<FormContact> {
         edad: edadController.text,
         email: emailController.text,
         updateAt: DateTime.now());
-    await databaseHelper.updateContact(updateContact);
-    _showToast("Contacto actualizado con exito");
+
+    await DatabaseHelper.instance.updateContact(updateContact).then((value) => _showToast("Contacto actualizado con exito"));
+    //await databaseHelper.updateContact(updateContact);
+    //_showToast("Contacto actualizado con exito");
   }
 
   void fillFormContact() {
