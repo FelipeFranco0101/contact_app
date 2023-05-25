@@ -1,5 +1,5 @@
-import 'package:contact_app/contact_home_page.dart';
 import 'package:contact_app/database/database_helper.dart';
+import 'package:contact_app/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -25,11 +25,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ContactHomePages(
-        database: database,
-      ),
+      home: WelcomeScreen(),
     );
   }
 }

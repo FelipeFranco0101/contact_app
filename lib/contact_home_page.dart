@@ -17,6 +17,7 @@ class _ContactHomeState extends State<ContactHomePages> {
   double _availableScreenWidth = 0;
   int _selectedIndex = 0;
   int amountContact = 0;
+  late double promedioEdad = 0.0;
   List<Contact> listUpdatedContact = List.empty(growable: true);
   List<Contact> listContact = List.empty(growable: true);
 
@@ -43,12 +44,34 @@ class _ContactHomeState extends State<ContactHomePages> {
   void initState() {
     super.initState();
     countContactCreated();
+    getAverage();
   }
 
   void countContactCreated() async {
     await DatabaseHelper.instance.getCountContacts().then((value) => setState(() {
           amountContact = value ?? 0;
         }));
+  }
+
+  void getAverage() async {
+    await DatabaseHelper.instance.retrieveContacs().then((value) => setState(() {
+          promedioEdad = roundDouble(_calcularPromedioEdad(value), 2);
+          debugPrint(promedioEdad.toString());
+        }));
+  }
+
+  double _calcularPromedioEdad(List<Contact> contacts) {
+    if (contacts.isEmpty) return 0.0;
+    double sum = 0;
+    for (var contact in contacts) {
+      sum += int.parse((contact.edad ?? "").isNotEmpty ? contact.edad.toString() : "0");
+    }
+    return sum / contacts.length;
+  }
+
+  double roundDouble(double value, int places) {
+    num mod = pow(10.0, places);
+    return ((value * mod).round().toDouble() / mod);
   }
 
   @override
@@ -74,14 +97,28 @@ class _ContactHomeState extends State<ContactHomePages> {
             ),
             Row(children: [
               Container(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                height: 50,
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.black.withOpacity(.1)),
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.search,
-                    size: 28,
-                    color: Colors.white,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Promedio edad',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '$promedioEdad',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(
@@ -167,7 +204,9 @@ class _ContactHomeState extends State<ContactHomePages> {
         decoration: const BoxDecoration(shape: BoxShape.circle, boxShadow: [BoxShadow(color: Colors.white, spreadRadius: 7, blurRadius: 1)]),
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FormContact(appBarTitle: 'Nuevo contacto'))).then((value) => setState(() => countContactCreated()));
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => const FormContact(appBarTitle: 'Nuevo contacto')))
+                .then((value) => {countContactCreated(), getAverage(), setState(() {})});
           },
           child: const Icon(Icons.add),
         ),
@@ -452,8 +491,7 @@ class _ContactHomeState extends State<ContactHomePages> {
   }
 
   void deleteById(int id) async {
-    await DatabaseHelper.instance.deleteContact(id);
-    countContactCreated();
+    await DatabaseHelper.instance.deleteContact(id).then((value) => {countContactCreated(), getAverage()});
     //reloadContacts();
   }
 }
