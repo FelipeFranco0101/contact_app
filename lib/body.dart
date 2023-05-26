@@ -1,5 +1,6 @@
 import 'package:contact_app/background.dart';
 import 'package:contact_app/login/login_screen.dart';
+import 'package:contact_app/login/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -37,7 +38,13 @@ class Body extends StatelessWidget {
               }));
             },
           ),
-          RoundedButton(text: 'Login', press: () {}),
+          RoundedButton(
+              text: 'Sign Up',
+              press: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  return const SignUp();
+                }));
+              }),
         ],
       ),
     ));

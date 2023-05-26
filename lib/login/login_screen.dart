@@ -1,13 +1,26 @@
 import 'package:contact_app/contact_home_page.dart';
+import 'package:contact_app/database/database_helper.dart';
+import 'package:contact_app/login/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class LoginScreen extends StatelessWidget {
+import 'input_commons.dart';
+
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final usuarioController = TextEditingController();
+  final claveController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SizedBox(
         width: double.infinity,
@@ -27,96 +40,118 @@ class LoginScreen extends StatelessWidget {
                 'assets/images/login_bottom.png',
                 width: size.width * 0.4,
               )),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'LOGIN',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: size.height * 0.03,
-              ),
-              SvgPicture.asset(
-                'assets/icons/login.svg',
-                height: size.height * 0.35,
-              ),
-              SizedBox(
-                height: size.height * 0.03,
-              ),
-              InputsLogin(
-                hintText: 'Usuario',
-                iconData: Icons.person,
-                onChanged: (value) {},
-              ),
-              InputsLogin(
-                hintText: 'Contraseña',
-                iconData: Icons.lock,
-                onChanged: (value) {},
-                obscureText: true,
-                suffixIconData: Icons.visibility,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
-                child: SizedBox(
-                  width: size.height * 0.8,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(29),
-                    child: FilledButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return const ContactHomePages();
-                        }));
-                      },
-                      child: const Text('LOGIN'),
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'LOGIN',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: size.height * 0.03,
+                ),
+                SvgPicture.asset(
+                  'assets/icons/login.svg',
+                  height: size.height * 0.35,
+                ),
+                SizedBox(
+                  height: size.height * 0.03,
+                ),
+                InputsLogin(
+                  hintText: 'Usuario',
+                  iconData: Icons.person,
+                  onChanged: (value) {
+                    usuarioController.text = value;
+                  },
+                  textEditingController: usuarioController,
+                ),
+                InputsLogin(
+                    hintText: 'Contraseña',
+                    iconData: Icons.lock,
+                    onChanged: (value) {
+                      claveController.text = value;
+                    },
+                    obscureText: true,
+                    suffixIconData: Icons.visibility,
+                    textEditingController: claveController),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                  child: SizedBox(
+                    width: size.height * 0.8,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(29),
+                      child: FilledButton(
+                        onPressed: () {
+                          validAuth(context);
+                        },
+                        child: const Text('LOGIN'),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'No tienes una cuenta? ',
-                    style: TextStyle(color: Colors.blueGrey),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Sign up',
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'No tienes una cuenta? ',
+                      style: TextStyle(color: Colors.blueGrey),
                     ),
-                  ),
-                ],
-              )
-              /*const TextFieldContainer(
-                  child: TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                    hintText: 'Contraseña',
-                    icon: Icon(
-                      Icons.lock,
-                      color: Colors.amber,
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) {
+                          return const SignUp();
+                        }));
+                      },
+                      child: const Text(
+                        'Sign up',
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
+                      ),
                     ),
-                    suffixIcon: Icon(
-                      Icons.visibility,
-                      color: Colors.amber,
-                    )),
-              ))*/
-            ],
+                  ],
+                )
+                /*const TextFieldContainer(
+                    child: TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      hintText: 'Contraseña',
+                      icon: Icon(
+                        Icons.lock,
+                        color: Colors.amber,
+                      ),
+                      suffixIcon: Icon(
+                        Icons.visibility,
+                        color: Colors.amber,
+                      )),
+                ))*/
+              ],
+            ),
           )
         ]),
       ),
     );
   }
+
+  void validAuth(BuildContext context) async {
+    debugPrint('${usuarioController.text} ${claveController.text}');
+    await DatabaseHelper.instance.auth(usuarioController.text, claveController.text).then((value) => {
+          if (value != null)
+            {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return ContactHomePages(usuario: value.usuario);
+              }))
+            }
+        });
+  }
 }
 
-class InputsLogin extends StatelessWidget {
+/*class InputsLogin extends StatelessWidget {
   final String hintText;
   final IconData iconData;
   final IconData? suffixIconData;
   final ValueChanged<String> onChanged;
   final bool obscureText;
+  final TextEditingController textEditingController;
   const InputsLogin({
     super.key,
     required this.hintText,
@@ -124,12 +159,14 @@ class InputsLogin extends StatelessWidget {
     required this.onChanged,
     this.obscureText = false,
     this.suffixIconData,
+    required this.textEditingController,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextField(
+        controller: textEditingController,
         obscureText: obscureText,
         onChanged: onChanged,
         decoration: InputDecoration(
@@ -168,3 +205,4 @@ class TextFieldContainer extends StatelessWidget {
     );
   }
 }
+*/
