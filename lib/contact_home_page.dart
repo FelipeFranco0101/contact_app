@@ -344,14 +344,19 @@ class _ContactHomeState extends State<ContactHomePages> {
           ),
           title: Text("${contact.nombres} ${contact.apellidos}"),
           subtitle: Text("Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
-          trailing: IconButton(
-            onPressed: () => deleteById(contact.id),
-            icon: const Icon(Icons.delete),
+          trailing: Wrap(
+            spacing: -8,
+            children: <Widget>[
+              IconButton(
+                onPressed: () => navigateToDetail(contact, 'Editar Contacto'),
+                icon: const Icon(Icons.edit),
+              ), // icon-1
+              IconButton(
+                onPressed: () => deleteById(contact.id),
+                icon: const Icon(Icons.delete),
+              ),
+            ],
           ),
-          onTap: () {
-            debugPrint("Accion para editar el contacto");
-            navigateToDetail(contact, 'Editar Contacto');
-          },
         ),
       ),
     );
