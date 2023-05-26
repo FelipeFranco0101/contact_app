@@ -401,29 +401,6 @@ class _ContactHomeState extends State<ContactHomePages> {
     );
   }
 
-  /*FutureBuilder<List<Contact>> buildRecentlyUpdateContactsList() {
-    return FutureBuilder(
-        future: DatabaseHelper.instance.getRecentlyUpdate(),
-        builder: (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center();
-          }
-          listContact = snapshot.data!.getRange(0, 1).toList();
-          return Expanded(
-            child: ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(25),
-              itemCount: listContact.length,
-              itemBuilder: (BuildContext context, int index) {
-                Contact contact = listContact[index];
-                mostar(contact);
-                return buildRecentlyUpdateContacts(contact.nombres, 'asd/asd/asd');
-              },
-            ),
-          );
-        });
-  }*/
-
   Widget buildRecentlyUpdateContactsList() {
     return FutureBuilder(
         future: DatabaseHelper.instance.getRecentlyUpdate(),
