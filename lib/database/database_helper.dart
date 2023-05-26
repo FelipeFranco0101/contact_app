@@ -1,4 +1,5 @@
 import 'package:contact_app/models/Contact.dart';
+import 'package:contact_app/models/Auth.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -20,11 +21,17 @@ class DatabaseHelper {
 
   void _createDB(Database db, int newVersion) async {
     await db.execute(Contact.createQuery);
+    await db.execute(Auth.createQuery);
   }
 
   Future<int> insertContact(Contact contact) async {
     final Database db = await DatabaseHelper.instance.initializeDB();
     return await db.insert(Contact.tableName, contact.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<int> insertUser(Auth user) async {
+    final Database db = await DatabaseHelper.instance.initializeDB();
+    return await db.insert(Auth.tableName, user.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<Contact>> retrieveContacs() async {
@@ -57,5 +64,17 @@ class DatabaseHelper {
     final Database db = await initializeDB();
     var result = await db.delete(Contact.tableName, where: 'id = ?', whereArgs: [id]);
     return result;
+  }
+
+  Future<Auth?> auth(String usuario, String clave) async {
+    final Database db = await DatabaseHelper.instance.initializeDB();
+
+    final auth = await db.rawQuery("SELECT * FROM ${Auth.tableName} WHERE "
+        "${Auth.colUsuario} = '$usuario' AND "
+        "${Auth.colClave} = '$clave'");
+
+    //final auth = await db.rawQuery('SELECT * FROM ${Auth.tableName} WHERE ${Auth.colUsuario} = ${usuario} AND ${Auth.colClave} = $clave');
+
+    return auth.isNotEmpty ? Auth.fromMap(auth.first) : null;
   }
 }

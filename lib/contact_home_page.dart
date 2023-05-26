@@ -7,7 +7,8 @@ import 'package:sqflite/sqflite.dart';
 
 class ContactHomePages extends StatefulWidget {
   final Database? database;
-  const ContactHomePages({super.key, this.database});
+  final String usuario;
+  const ContactHomePages({super.key, this.database, required this.usuario});
 
   @override
   State<ContactHomePages> createState() => _ContactHomeState();
@@ -93,6 +94,7 @@ class _ContactHomeState extends State<ContactHomePages> {
               children: [
                 const Text('Contact App', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)),
                 Text(getSaludo(), style: const TextStyle(fontSize: 17, color: Colors.white)),
+                Text(widget.usuario.toUpperCase(), style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold)),
               ],
             ),
             Row(children: [
@@ -487,7 +489,7 @@ class _ContactHomeState extends State<ContactHomePages> {
         .push(MaterialPageRoute(
           builder: (context) => FormContact(appBarTitle: title, contactEdit: contact),
         ))
-        .then((value) => {setState(() {})});
+        .then((value) => {getAverage(), setState(() {})});
   }
 
   void deleteById(int id) async {
