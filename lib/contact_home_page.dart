@@ -15,6 +15,7 @@ class ContactHomePages extends StatefulWidget {
 }
 
 class _ContactHomeState extends State<ContactHomePages> {
+  bool isFilter = false;
   double _availableScreenWidth = 0;
   int _selectedIndex = 0;
   int amountContact = 0;
@@ -200,6 +201,21 @@ class _ContactHomeState extends State<ContactHomePages> {
             ],
           ),
         ),
+        Container(
+          padding: const EdgeInsets.only(left: 25, right: 25),
+          child: Column(
+            children: [
+              TextField(
+                onChanged: (value) => _filterContact(value),
+                decoration: InputDecoration(
+                    contentPadding: const EdgeInsetsDirectional.symmetric(vertical: 10.0, horizontal: 15),
+                    hintText: 'Buscar',
+                    suffixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0), borderSide: const BorderSide())),
+              ),
+            ],
+          ),
+        ),
         buildlistContactsList(),
       ]),
       floatingActionButton: Container(
@@ -208,7 +224,7 @@ class _ContactHomeState extends State<ContactHomePages> {
           onPressed: () {
             Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => const FormContact(appBarTitle: 'Nuevo contacto')))
-                .then((value) => {countContactCreated(), getAverage(), setState(() {})});
+                .then((value) => {countContactCreated(), isFilter = false, getAverage(), setState(() {})});
           },
           child: const Icon(Icons.add),
         ),
@@ -317,7 +333,11 @@ class _ContactHomeState extends State<ContactHomePages> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          listContact = snapshot.data!;
+          if (!isFilter) {
+            listContact = snapshot.data!;
+          }
+
+          //listContact = snapshot.data!;
           return Expanded(
             child: ListView.builder(
               itemCount: listContact.length,
@@ -471,11 +491,27 @@ class _ContactHomeState extends State<ContactHomePages> {
         .push(MaterialPageRoute(
           builder: (context) => FormContact(appBarTitle: title, contactEdit: contact),
         ))
-        .then((value) => {getAverage(), setState(() {})});
+        .then((value) => {getAverage(), isFilter = false, setState(() {})});
   }
 
   void deleteById(int id) async {
     await DatabaseHelper.instance.deleteContact(id).then((value) => {countContactCreated(), getAverage()});
     //reloadContacts();
+  }
+
+  List<Contact> _filterContact(String enterKeyboard) {
+    List<Contact> result = [];
+    if (enterKeyboard.isEmpty) {
+      isFilter = false;
+      result = listContact;
+    } else {
+      isFilter = true;
+      result = listContact.where((element) => element.nombres.toLowerCase().trim().contains(enterKeyboard.toLowerCase().trim())).toList();
+    }
+
+    setState(() {
+      listContact = result;
+    });
+    return listContact;
   }
 }
