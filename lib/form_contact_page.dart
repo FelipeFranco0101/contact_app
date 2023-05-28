@@ -21,6 +21,7 @@ class FormContactState extends State<FormContact> {
   var telefonoController = TextEditingController();
   var edadController = TextEditingController();
   var emailController = TextEditingController();
+  var hobbieValue;
 
   late DatabaseHelper databaseHelper;
 
@@ -33,6 +34,14 @@ class FormContactState extends State<FormContact> {
 
   @override
   Widget build(BuildContext context) {
+    const List<String> list = <String>[
+      'Leer',
+      'Deportes',
+      'Cocinar',
+      'Viajar',
+      'Bailar'
+    ];
+
     return Scaffold(
         appBar: AppBar(
             title: Text(widget.appBarTitle ?? 'Crear contacto'),
@@ -71,7 +80,9 @@ class FormContactState extends State<FormContact> {
                               onPressed: nombresController.clear,
                             )),
                         validator: (value) {
-                          return (value!.isEmpty) ? 'Por favor ingrese un nombre' : null;
+                          return (value!.isEmpty)
+                              ? 'Por favor ingrese un nombre'
+                              : null;
                         },
                       ),
                       const SizedBox(height: 20.0),
@@ -86,7 +97,9 @@ class FormContactState extends State<FormContact> {
                               onPressed: apellidosController.clear,
                             )),
                         validator: (value) {
-                          return (value!.isEmpty) ? 'Por favor ingrese el apellido' : null;
+                          return (value!.isEmpty)
+                              ? 'Por favor ingrese el apellido'
+                              : null;
                         },
                       ),
                       const SizedBox(height: 20.0),
@@ -95,14 +108,17 @@ class FormContactState extends State<FormContact> {
                         controller: telefonoController,
                         decoration: InputDecoration(
                             labelText: 'Telefono',
-                            prefixIcon: const Icon(Icons.phone_android_outlined),
+                            prefixIcon:
+                                const Icon(Icons.phone_android_outlined),
                             border: const OutlineInputBorder(),
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear),
                               onPressed: telefonoController.clear,
                             )),
                         validator: (value) {
-                          return (value!.isEmpty) ? 'Por favor ingrese el numero de telefono' : null;
+                          return (value!.isEmpty)
+                              ? 'Por favor ingrese el numero de telefono'
+                              : null;
                         },
                       ),
                       const SizedBox(height: 20.0),
@@ -111,7 +127,8 @@ class FormContactState extends State<FormContact> {
                         controller: edadController,
                         decoration: InputDecoration(
                             labelText: 'Edad',
-                            prefixIcon: const Icon(Icons.access_time_filled_outlined),
+                            prefixIcon:
+                                const Icon(Icons.access_time_filled_outlined),
                             border: const OutlineInputBorder(),
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear),
@@ -148,6 +165,32 @@ class FormContactState extends State<FormContact> {
                         },
                       ),
                       const SizedBox(height: 20.0),
+                      DropdownButtonFormField<String>(
+                        value: hobbieValue,
+                        decoration: InputDecoration(
+                          labelText: 'Hobbie',
+                          prefixIcon:
+                              const Icon(Icons.sports_football_outlined),
+                          border: const OutlineInputBorder(),
+                        ),
+                        icon: const Icon(Icons.arrow_drop_down_rounded),
+                        elevation: 16,
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 104, 108, 110)),
+                        onChanged: (String? value) {
+                          // This is called when the user selects an item.
+                          setState(() {
+                            hobbieValue = value!;
+                          });
+                        },
+                        items:
+                            list.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      )
                     ],
                   ),
                 ),
@@ -166,7 +209,8 @@ class FormContactState extends State<FormContact> {
             widget.contactEdit != null ? updateContact() : _saveRecord();
           }
         },
-        child: Text(widget.contactEdit != null ? 'Update' : 'Submit form', style: const TextStyle(fontWeight: FontWeight.bold)));
+        child: Text(widget.contactEdit != null ? 'Update' : 'Submit form',
+            style: const TextStyle(fontWeight: FontWeight.bold)));
   }
 
   void _saveRecord() async {
@@ -176,7 +220,17 @@ class FormContactState extends State<FormContact> {
     var telefono = telefonoController.text;
     var edad = edadController.text;
     var email = emailController.text;
-    var newContact = Contact(id: -1, nombres: nombres, apellidos: apellidos, telefono: telefono, edad: edad, email: email, updateAt: dateUpdateAt);
+    var hobbie = hobbieValue;
+    var newContact = Contact(
+      id: -1,
+      nombres: nombres,
+      apellidos: apellidos,
+      telefono: telefono,
+      edad: edad,
+      email: email,
+      hobbie: hobbie,
+      updateAt: dateUpdateAt,
+    );
     await DatabaseHelper.instance.insertContact(newContact);
 
     nombresController.text = "";
@@ -202,7 +256,8 @@ class FormContactState extends State<FormContact> {
     scaffold.showSnackBar(
       SnackBar(
         content: Text(msg),
-        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }
@@ -215,9 +270,12 @@ class FormContactState extends State<FormContact> {
         telefono: telefonoController.text,
         edad: edadController.text,
         email: emailController.text,
+        hobbie: hobbieValue,
         updateAt: DateTime.now());
 
-    await DatabaseHelper.instance.updateContact(updateContact).then((value) => _showToast("Contacto actualizado con exito"));
+    await DatabaseHelper.instance
+        .updateContact(updateContact)
+        .then((value) => _showToast("Contacto actualizado con exito"));
     //await databaseHelper.updateContact(updateContact);
     //_showToast("Contacto actualizado con exito");
   }
@@ -229,6 +287,7 @@ class FormContactState extends State<FormContact> {
       telefonoController.text = widget.contactEdit!.telefono;
       edadController.text = widget.contactEdit!.edad ?? "";
       emailController.text = widget.contactEdit!.email ?? "";
+      hobbieValue = widget.contactEdit!.hobbie ?? "";
     }
   }
 }
