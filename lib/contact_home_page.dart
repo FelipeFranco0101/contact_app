@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:contact_app/database/database_helper.dart';
 import 'package:contact_app/form_contact_page.dart';
 import 'package:contact_app/models/Contact.dart';
+import 'package:contact_app/lista_hobbies.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -28,6 +29,16 @@ class _ContactHomeState extends State<ContactHomePages> {
     //var b = await DatabaseHelper.instance.retrieveContacs();
     //var c = await DatabaseHelper.instance.getRecentlyUpdate();
     debugPrint(a.toString());
+  }
+
+  void _irAListaHobbies() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            const ListaHobbiesPage(), // Página a la que quieres navegar
+      ),
+    );
   }
 
   String getSaludo() {
@@ -83,7 +94,7 @@ class _ContactHomeState extends State<ContactHomePages> {
 
   @override
   Widget build(BuildContext context) {
-    _availableScreenWidth = MediaQuery.of(context).size.width - 50;
+    _availableScreenWidth = MediaQuery.of(context).size.width - 80;
     //prueba();
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -91,7 +102,7 @@ class _ContactHomeState extends State<ContactHomePages> {
         Container(
           padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
           alignment: Alignment.bottomCenter,
-          height: 170,
+          height: 150,
           decoration: BoxDecoration(color: Colors.blue.shade800),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -186,6 +197,12 @@ class _ContactHomeState extends State<ContactHomePages> {
               )
             ]),
           ]),
+        ),
+        Center(
+          child: ElevatedButton(
+            onPressed: _irAListaHobbies, // Agrega el enlace al botón
+            child: const Text('Ir a Lista de Hobbies'),
+          ),
         ),
         containerRecentlyUpdateContact(),
         Container(
@@ -291,45 +308,6 @@ class _ContactHomeState extends State<ContactHomePages> {
     );
   }
 
-  /*Widget buildlistContactsList() {
-    return Expanded(
-        child: ListView(
-      padding: const EdgeInsets.all(25),
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Contacts',
-              style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            InkWell(
-              onTap: () {
-                debugPrint('Siii');
-              },
-              child: Ink(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: const Text(
-                  'New Contacts',
-                  style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        buildListContacts('Felipe'),
-        buildListContacts('Manu'),
-        buildListContacts('Rachel'),
-        buildListContacts('Salo'),
-      ],
-    ));
-  }*/
-
   Widget containerRecentlyUpdateContact() {
     if (amountContact > 0) {
       return Container(
@@ -402,7 +380,7 @@ class _ContactHomeState extends State<ContactHomePages> {
           ),
           title: Text("${contact.nombres} ${contact.apellidos}"),
           subtitle: Text(
-              "Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} \nHobbies: ${contact.hobbies?.join(', ') ?? 'N/A'} "),
+              "Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
           trailing: Wrap(
             spacing: -8,
             children: <Widget>[

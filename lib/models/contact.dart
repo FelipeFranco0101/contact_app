@@ -1,3 +1,5 @@
+import 'package:sqflite/sqflite.dart';
+
 class Contact {
   static String colId = 'id';
   static String colNombres = 'nombres';
@@ -56,5 +58,20 @@ class Contact {
           map['updateAt'] != null ? DateTime.parse(map['updateAt']) : null,
       hobbies: map['hobbies']?.split(','),
     );
+  }
+  static Future<List<Contact>> obtenerContactosDeBaseDeDatos() async {
+    final db = await abrirBaseDeDatos();
+    final List<Map<String, dynamic>> contactosMap =
+        await db.query(Contact.tableName);
+    final List<Contact> contactos =
+        contactosMap.map((map) => Contact.fromMap(map)).toList();
+    return contactos;
+  }
+
+  static Future<Database> abrirBaseDeDatos() async {
+    const String path = 'contact_database.db';
+    final Database db = await openDatabase(path);
+
+    return db;
   }
 }
