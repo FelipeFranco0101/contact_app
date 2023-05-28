@@ -6,10 +6,11 @@ class Contact {
   static String colEdad = 'edad';
   static String colEmail = 'email';
   static String colUpdateAt = 'updateAt';
+  static String colHobbies = 'hobbies';
 
   static String tableName = "contactos";
   static String createQuery =
-      'CREATE TABLE $tableName ($colId integer primary key AUTOINCREMENT, $colNombres TEXT, $colApellidos TEXT, $colTelefono TEXT, $colEdad TEXT, $colEmail TEXT, $colUpdateAt TEXT)';
+      'CREATE TABLE $tableName ($colId integer primary key AUTOINCREMENT, $colNombres TEXT, $colApellidos TEXT, $colTelefono TEXT, $colEdad TEXT, $colEmail TEXT, $colUpdateAt TEXT, $colHobbies TEXT)';
 
   final int id;
   final String nombres;
@@ -18,6 +19,7 @@ class Contact {
   final String? edad;
   final String? email;
   final DateTime? updateAt;
+  final List<String>? hobbies;
 
   Contact({
     required this.id,
@@ -27,6 +29,7 @@ class Contact {
     this.edad,
     this.email,
     this.updateAt,
+    required this.hobbies,
   });
 
   Map<String, dynamic> toMap() {
@@ -37,6 +40,7 @@ class Contact {
       'edad': edad,
       'email': email,
       'updateAt': updateAt?.toIso8601String(),
+      'hobbies': hobbies?.join(','),
     };
   }
 
@@ -50,6 +54,7 @@ class Contact {
       email: map['email'],
       updateAt:
           map['updateAt'] != null ? DateTime.parse(map['updateAt']) : null,
+      hobbies: map['hobbies']?.split(','),
     );
   }
 }
