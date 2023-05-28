@@ -23,6 +23,9 @@ class FormContactState extends State<FormContact> {
   var edadController = TextEditingController();
   var emailController = TextEditingController();
   List<String> hobbies = [];
+  bool isAnyCheckboxSelected() {
+    return hobbies.isNotEmpty;
+  }
 
   late DatabaseHelper databaseHelper;
 
@@ -266,14 +269,22 @@ class FormContactState extends State<FormContact> {
 
   OutlinedButton submitForm(BuildContext context) {
     return OutlinedButton(
-        style: OutlinedButton.styleFrom(minimumSize: const Size(200, 50)),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            widget.contactEdit != null ? updateContact() : _saveRecord();
-          }
-        },
-        child: Text(widget.contactEdit != null ? 'Update' : 'Submit form',
-            style: const TextStyle(fontWeight: FontWeight.bold)));
+      style: OutlinedButton.styleFrom(minimumSize: const Size(200, 50)),
+      onPressed: () {
+        if (_formKey.currentState!.validate() && isAnyCheckboxSelected()) {
+          widget.contactEdit != null ? updateContact() : _saveRecord();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Por favor, selecciona al menos un hobbie.')),
+          );
+        }
+      },
+      child: Text(
+        widget.contactEdit != null ? 'Update' : 'Submit form',
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
   }
 
   void _saveRecord() async {

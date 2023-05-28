@@ -380,7 +380,7 @@ class _ContactHomeState extends State<ContactHomePages> {
           ),
           title: Text("${contact.nombres} ${contact.apellidos}"),
           subtitle: Text(
-              "Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
+              "Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} \nHobbies: ${contact.hobbies?.join(', ') ?? 'N/A'}"),
           trailing: Wrap(
             spacing: -8,
             children: <Widget>[

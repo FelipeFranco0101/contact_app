@@ -9,7 +9,7 @@ class ListaHobbiesPage extends StatefulWidget {
 }
 
 class _ListaHobbiesPageState extends State<ListaHobbiesPage> {
-  List<Hobby> _hobbies = [];
+  List<Hobbie> _hobbies = [];
 
   @override
   void initState() {
@@ -24,12 +24,12 @@ class _ListaHobbiesPageState extends State<ListaHobbiesPage> {
 
     for (Contact contact in contacts) {
       if (contact.hobbies != null) {
-        for (String? hobby in contact.hobbies!) {
-          if (hobby != null) {
-            if (hobbiesCount.containsKey(hobby)) {
-              hobbiesCount[hobby] = (hobbiesCount[hobby] ?? 0) + 1;
+        for (String? hobbie in contact.hobbies!) {
+          if (hobbie != null) {
+            if (hobbiesCount.containsKey(hobbie)) {
+              hobbiesCount[hobbie] = (hobbiesCount[hobbie] ?? 0) + 1;
             } else {
-              hobbiesCount[hobby] = 1;
+              hobbiesCount[hobbie] = 1;
             }
           }
         }
@@ -37,14 +37,14 @@ class _ListaHobbiesPageState extends State<ListaHobbiesPage> {
     }
 
     _hobbies = hobbiesCount.entries
-        .map((entry) => Hobby(name: entry.key, likes: entry.value))
+        .map((entry) => Hobbie(name: entry.key, likes: entry.value))
         .toList();
 
-    // Mover el hobby "Otros" al final de la lista
-    int otrosIndex = _hobbies.indexWhere((hobby) => hobby.name == "Otros");
+    // Mover el hobbie "Otros" al final de la lista
+    int otrosIndex = _hobbies.indexWhere((hobbie) => hobbie.name == "Otros");
     if (otrosIndex != -1) {
-      Hobby otrosHobby = _hobbies.removeAt(otrosIndex);
-      _hobbies.add(otrosHobby);
+      Hobbie otrosHobbie = _hobbies.removeAt(otrosIndex);
+      _hobbies.add(otrosHobbie);
     }
 
     setState(() {});
@@ -72,9 +72,9 @@ class _ListaHobbiesPageState extends State<ListaHobbiesPage> {
   }
 }
 
-class Hobby {
+class Hobbie {
   final String name;
   final int likes;
 
-  Hobby({required this.name, required this.likes});
+  Hobbie({required this.name, required this.likes});
 }
