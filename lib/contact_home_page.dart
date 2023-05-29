@@ -198,15 +198,19 @@ class _ContactHomeState extends State<ContactHomePages> {
             ]),
           ]),
         ),
-        Center(
-          child: ElevatedButton(
-            onPressed: _irAListaHobbies, // Agrega el enlace al botón
-            child: const Text('Ir a Lista de Hobbies'),
-          ),
+        Column(
+          children: [
+            Center(
+              child: ElevatedButton(
+                onPressed: _irAListaHobbies, // Agrega el enlace al botón
+                child: const Text('Ir a Lista de Hobbies'),
+              ),
+            ),
+          ],
         ),
         containerRecentlyUpdateContact(),
         Container(
-          padding: const EdgeInsets.all(25),
+          padding: const EdgeInsets.all(10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,7 +219,7 @@ class _ContactHomeState extends State<ContactHomePages> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Contacts',
+                    'Contactos',
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 18,
@@ -230,7 +234,7 @@ class _ContactHomeState extends State<ContactHomePages> {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: const Text(
-                        'New Contacts',
+                        'Contactos Nuevos',
                         style: TextStyle(
                             color: Colors.blue,
                             fontSize: 16,
@@ -317,14 +321,14 @@ class _ContactHomeState extends State<ContactHomePages> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Ultimos actualizados',
+              'Últimos creados/actualizados',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(
-              height: 15,
+              height: 10,
             ),
             Row(
               children: [
@@ -448,10 +452,10 @@ class _ContactHomeState extends State<ContactHomePages> {
           listUpdatedContact = snapshot.data!;
           return Expanded(
             child: SizedBox(
-              height: 150,
+              height: 135,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                //shrinkWrap: true,
+                shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 //padding: const EdgeInsets.all(25),
                 itemCount: listUpdatedContact.length,
@@ -482,8 +486,8 @@ class _ContactHomeState extends State<ContactHomePages> {
           decoration: BoxDecoration(
               color: Colors.grey.shade200,
               borderRadius: BorderRadius.circular(15)),
-          padding: const EdgeInsets.all(38),
-          height: 90,
+          padding: const EdgeInsets.all(10),
+          height: 60,
           child: const Icon(Icons.man),
         ),
         const SizedBox(
