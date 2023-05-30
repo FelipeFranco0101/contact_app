@@ -370,6 +370,15 @@ class _ContactHomeState extends State<ContactHomePages> {
   }
 
   Widget buildListContactsCard(Contact contact) {
+    String hobbiesText = contact.hobbies?.join(', ') ?? 'N/A';
+
+    if (hobbiesText.contains('otros')) {
+      List<String> hobbiesList = hobbiesText.split(', ');
+      hobbiesList.remove('otros');
+      hobbiesList.add('otros');
+      hobbiesText = hobbiesList.join(', ');
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
@@ -384,7 +393,8 @@ class _ContactHomeState extends State<ContactHomePages> {
           ),
           title: Text("${contact.nombres} ${contact.apellidos}"),
           subtitle: Text(
-              "Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} \nHobbies: ${contact.hobbies?.join(', ') ?? 'N/A'}"),
+            "Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} \nHobbies: $hobbiesText",
+          ),
           trailing: Wrap(
             spacing: -8,
             children: <Widget>[

@@ -144,7 +144,7 @@ class _SignUpState extends State<SignUp> {
     usuarioController.text = "";
     claveController.text = "";
 
-    // Agregar un retraso antes de redirigir a la página de inicio de sesión
+    // Agregamos un retraso antes de redirigir a la página de inicio de sesión
     await Future.delayed(const Duration(seconds: 3));
 
     Future.microtask(() {

@@ -144,13 +144,15 @@ class FormContactState extends State<FormContact> {
                       TextFormField(
                         controller: emailController,
                         decoration: InputDecoration(
-                            labelText: 'Email',
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            border: const OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: emailController.clear,
-                            )),
+                          labelText: 'Email',
+                          prefixIcon: const Icon(Icons.email_outlined),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: emailController.clear,
+                          ),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value!.isEmpty ||
                               !RegExp(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b') // validación de formato de email
@@ -281,7 +283,7 @@ class FormContactState extends State<FormContact> {
         }
       },
       child: Text(
-        widget.contactEdit != null ? 'Update' : 'Submit form',
+        widget.contactEdit != null ? 'Actualizar' : 'Registrar',
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
@@ -330,7 +332,7 @@ class FormContactState extends State<FormContact> {
       SnackBar(
         content: Text(msg),
         action: SnackBarAction(
-            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+            label: 'OK', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }
