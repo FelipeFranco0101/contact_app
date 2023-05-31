@@ -18,20 +18,23 @@ class Body extends StatelessWidget {
         children: [
           const Text(
             'Bienvenido',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+                color: Colors.blueAccent),
           ),
           SizedBox(
             height: size.height * 0.03,
           ),
           SvgPicture.asset(
             'assets/icons/chat.svg',
-            height: size.height * 0.45,
+            height: size.height * 0.40,
           ),
           SizedBox(
             height: size.height * 0.03,
           ),
           RoundedButton(
-            text: 'Login',
+            text: 'Iniciar Sesión',
             press: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return const LoginScreen();
@@ -39,7 +42,7 @@ class Body extends StatelessWidget {
             },
           ),
           RoundedButton(
-              text: 'Sign Up',
+              text: 'Registrarse',
               press: () {
                 Navigator.push(context, MaterialPageRoute(builder: (_) {
                   return const SignUp();

@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'input_commons.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -16,6 +16,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final usuarioController = TextEditingController();
   final claveController = TextEditingController();
+
+  bool showError = false;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +78,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     suffixIconData: Icons.visibility,
                     textEditingController: claveController),
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
                   child: SizedBox(
                     width: size.height * 0.8,
                     child: ClipRRect(
@@ -90,6 +93,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
+                if (showError) // Mostrar el mensaje de error solo cuando showError es true
+                  const Text(
+                    'Usuario o contraseña incorrectos. Intenta nuevamente.',
+                    style: TextStyle(color: Colors.red),
+                  ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -105,7 +113,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: const Text(
                         'Sign up',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey),
                       ),
                     ),
                   ],
@@ -134,14 +144,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void validAuth(BuildContext context) async {
     debugPrint('${usuarioController.text} ${claveController.text}');
-    await DatabaseHelper.instance.auth(usuarioController.text, claveController.text).then((value) => {
-          if (value != null)
-            {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return ContactHomePages(usuario: value.usuario);
-              }))
-            }
-        });
+    await DatabaseHelper.instance
+        .auth(usuarioController.text, claveController.text)
+        .then(
+      (value) {
+        if (value != null) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ContactHomePages(usuario: value.usuario);
+          }));
+        } else {
+          setState(() {
+            showError =
+                true; // Mostrar el mensaje de error si las credenciales son incorrectas
+          });
+        }
+      },
+    );
   }
 }
 

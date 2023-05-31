@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'input_commons.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+  const SignUp({Key? key}) : super(key: key);
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -16,6 +16,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final usuarioController = TextEditingController();
   final claveController = TextEditingController();
+  bool showSuccessMessage = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class _SignUpState extends State<SignUp> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'SIGN UP',
+                    'REGISTRARSE',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   SvgPicture.asset(
@@ -61,23 +62,39 @@ class _SignUpState extends State<SignUp> {
                     textEditingController: usuarioController,
                   ),
                   InputsLogin(
-                      hintText: 'Contraseña',
-                      iconData: Icons.lock,
-                      onChanged: (value) {
-                        claveController.text = value;
-                      },
-                      obscureText: true,
-                      suffixIconData: Icons.visibility,
-                      textEditingController: claveController),
+                    hintText: 'Contraseña',
+                    iconData: Icons.lock,
+                    onChanged: (value) {
+                      claveController.text = value;
+                    },
+                    obscureText: true,
+                    suffixIconData: Icons.visibility,
+                    textEditingController: claveController,
+                  ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 40),
                     child: SizedBox(
                       width: size.height * 0.8,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(29),
                         child: FilledButton(
                           onPressed: () => _saveUser(),
-                          child: const Text('SIGN UP'),
+                          child: const Text('REGISTRARSE'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 40),
+                    child: Visibility(
+                      visible: showSuccessMessage,
+                      child: const Text(
+                        'Registrado exitosamente',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
                         ),
                       ),
                     ),
@@ -91,13 +108,16 @@ class _SignUpState extends State<SignUp> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) {
                             return const LoginScreen();
                           }));
                         },
                         child: const Text(
-                          'Sign In',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueGrey),
+                          'Ingresar',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueGrey),
                         ),
                       ),
                     ],
@@ -117,9 +137,20 @@ class _SignUpState extends State<SignUp> {
     var newUser = Auth(id: -1, usuario: usuario, clave: clave);
     await DatabaseHelper.instance.insertUser(newUser);
 
+    setState(() {
+      showSuccessMessage = true; // Mostrar el mensaje de éxito
+    });
+
     usuarioController.text = "";
     claveController.text = "";
 
-    //_showToast("Contacto creado con exito");
+    // Agregamos un retraso antes de redirigir a la página de inicio de sesión
+    await Future.delayed(const Duration(seconds: 3));
+
+    Future.microtask(() {
+      Navigator.push(context, MaterialPageRoute(builder: (_) {
+        return const LoginScreen();
+      }));
+    });
   }
 }

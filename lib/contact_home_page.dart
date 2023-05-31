@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:contact_app/database/database_helper.dart';
 import 'package:contact_app/form_contact_page.dart';
 import 'package:contact_app/models/Contact.dart';
+import 'package:contact_app/lista_hobbies.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -25,9 +26,18 @@ class _ContactHomeState extends State<ContactHomePages> {
 
   void prueba() async {
     var a = await DatabaseHelper.instance.getCountContacts();
-    var b = await DatabaseHelper.instance.retrieveContacs();
-    var c = await DatabaseHelper.instance.getRecentlyUpdate();
+    //var b = await DatabaseHelper.instance.retrieveContacs();
+    //var c = await DatabaseHelper.instance.getRecentlyUpdate();
     debugPrint(a.toString());
+  }
+
+  void _irAListaHobbies() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ListaHobbiesPage(), // Página a la que quieres navegar
+      ),
+    );
   }
 
   String getSaludo() {
@@ -78,7 +88,7 @@ class _ContactHomeState extends State<ContactHomePages> {
 
   @override
   Widget build(BuildContext context) {
-    _availableScreenWidth = MediaQuery.of(context).size.width - 50;
+    _availableScreenWidth = MediaQuery.of(context).size.width - 80;
     //prueba();
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -86,7 +96,7 @@ class _ContactHomeState extends State<ContactHomePages> {
         Container(
           padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
           alignment: Alignment.bottomCenter,
-          height: 170,
+          height: 150,
           decoration: BoxDecoration(color: Colors.blue.shade800),
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Column(
@@ -168,9 +178,19 @@ class _ContactHomeState extends State<ContactHomePages> {
             ]),
           ]),
         ),
+        Column(
+          children: [
+            Center(
+              child: ElevatedButton(
+                onPressed: _irAListaHobbies, // Agrega el enlace al botón
+                child: const Text('Ir a Lista de Hobbies'),
+              ),
+            ),
+          ],
+        ),
         containerRecentlyUpdateContact(),
         Container(
-          padding: const EdgeInsets.all(25),
+          padding: const EdgeInsets.all(10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,19 +199,17 @@ class _ContactHomeState extends State<ContactHomePages> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Contacts',
+                    'Contactos',
                     style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   InkWell(
-                    onTap: () {
-                      debugPrint('Siii');
-                    },
+                    onTap: () => navigateCreateContact(),
                     child: Ink(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: const Text(
-                        'New Contacts',
+                        'Contactos Nuevos',
                         style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -221,11 +239,7 @@ class _ContactHomeState extends State<ContactHomePages> {
       floatingActionButton: Container(
         decoration: const BoxDecoration(shape: BoxShape.circle, boxShadow: [BoxShadow(color: Colors.white, spreadRadius: 7, blurRadius: 1)]),
         child: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => const FormContact(appBarTitle: 'Nuevo contacto')))
-                .then((value) => {countContactCreated(), isFilter = false, getAverage(), setState(() {})});
-          },
+          onPressed: () => navigateCreateContact(),
           child: const Icon(Icons.add),
         ),
       ),
@@ -254,45 +268,6 @@ class _ContactHomeState extends State<ContactHomePages> {
     );
   }
 
-  /*Widget buildlistContactsList() {
-    return Expanded(
-        child: ListView(
-      padding: const EdgeInsets.all(25),
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Contacts',
-              style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            InkWell(
-              onTap: () {
-                debugPrint('Siii');
-              },
-              child: Ink(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: const Text(
-                  'New Contacts',
-                  style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        buildListContacts('Felipe'),
-        buildListContacts('Manu'),
-        buildListContacts('Rachel'),
-        buildListContacts('Salo'),
-      ],
-    ));
-  }*/
-
   Widget containerRecentlyUpdateContact() {
     if (amountContact > 0) {
       return Container(
@@ -302,14 +277,14 @@ class _ContactHomeState extends State<ContactHomePages> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Ultimos actualizados',
+              'Últimos creados/actualizados',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(
-              height: 15,
+              height: 10,
             ),
             Row(
               children: [
@@ -351,6 +326,15 @@ class _ContactHomeState extends State<ContactHomePages> {
   }
 
   Widget buildListContactsCard(Contact contact) {
+    String hobbiesText = contact.hobbies?.join(', ') ?? 'N/A';
+
+    if (hobbiesText.contains('otros')) {
+      List<String> hobbiesList = hobbiesText.split(', ');
+      hobbiesList.remove('otros');
+      hobbiesList.add('otros');
+      hobbiesText = hobbiesList.join(', ');
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
@@ -363,7 +347,9 @@ class _ContactHomeState extends State<ContactHomePages> {
             child: Text(contact.nombres[0] + contact.apellidos[0]),
           ),
           title: Text("${contact.nombres} ${contact.apellidos}"),
-          subtitle: Text("Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} "),
+          subtitle: Text(
+            "Edad: ${contact.edad} \nCel: ${contact.telefono} \nEmail: ${contact.email} \nHobbies: $hobbiesText",
+          ),
           trailing: Wrap(
             spacing: -8,
             children: <Widget>[
@@ -431,10 +417,10 @@ class _ContactHomeState extends State<ContactHomePages> {
           listUpdatedContact = snapshot.data!;
           return Expanded(
             child: SizedBox(
-              height: 150,
+              height: 135,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                //shrinkWrap: true,
+                shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 //padding: const EdgeInsets.all(25),
                 itemCount: listUpdatedContact.length,
@@ -462,8 +448,8 @@ class _ContactHomeState extends State<ContactHomePages> {
         Container(
           width: _availableScreenWidth * .31,
           decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(15)),
-          padding: const EdgeInsets.all(38),
-          height: 90,
+          padding: const EdgeInsets.all(10),
+          height: 60,
           child: const Icon(Icons.man),
         ),
         const SizedBox(
@@ -483,6 +469,12 @@ class _ContactHomeState extends State<ContactHomePages> {
         ),
       ],
     );
+  }
+
+  void navigateCreateContact() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const FormContact(appBarTitle: 'Nuevo contacto')))
+        .then((value) => {countContactCreated(), isFilter = false, getAverage(), setState(() {})});
   }
 
   void navigateToDetail(Contact contact, String title) {
