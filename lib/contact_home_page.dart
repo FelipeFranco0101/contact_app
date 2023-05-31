@@ -35,8 +35,7 @@ class _ContactHomeState extends State<ContactHomePages> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            const ListaHobbiesPage(), // Página a la que quieres navegar
+        builder: (context) => const ListaHobbiesPage(), // Página a la que quieres navegar
       ),
     );
   }
@@ -61,28 +60,23 @@ class _ContactHomeState extends State<ContactHomePages> {
   }
 
   void countContactCreated() async {
-    await DatabaseHelper.instance
-        .getCountContacts()
-        .then((value) => setState(() {
-              amountContact = value ?? 0;
-            }));
+    await DatabaseHelper.instance.getCountContacts().then((value) => setState(() {
+          amountContact = value ?? 0;
+        }));
   }
 
   void getAverage() async {
-    await DatabaseHelper.instance
-        .retrieveContacs()
-        .then((value) => setState(() {
-              promedioEdad = roundDouble(_calcularPromedioEdad(value), 2);
-              debugPrint(promedioEdad.toString());
-            }));
+    await DatabaseHelper.instance.retrieveContacs().then((value) => setState(() {
+          promedioEdad = roundDouble(_calcularPromedioEdad(value), 2);
+          debugPrint(promedioEdad.toString());
+        }));
   }
 
   double _calcularPromedioEdad(List<Contact> contacts) {
     if (contacts.isEmpty) return 0.0;
     double sum = 0;
     for (var contact in contacts) {
-      sum += int.parse(
-          (contact.edad ?? "").isNotEmpty ? contact.edad.toString() : "0");
+      sum += int.parse((contact.edad ?? "").isNotEmpty ? contact.edad.toString() : "0");
     }
     return sum / contacts.length;
   }
@@ -104,33 +98,21 @@ class _ContactHomeState extends State<ContactHomePages> {
           alignment: Alignment.bottomCenter,
           height: 150,
           decoration: BoxDecoration(color: Colors.blue.shade800),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Contact App',
-                    style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white)),
-                Text(getSaludo(),
-                    style: const TextStyle(fontSize: 17, color: Colors.white)),
-                Text(widget.usuario.toUpperCase(),
-                    style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold)),
+                const Text('Contact App', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)),
+                Text(getSaludo(), style: const TextStyle(fontSize: 17, color: Colors.white)),
+                Text(widget.usuario.toUpperCase(), style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold)),
               ],
             ),
             Row(children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 height: 50,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.black.withOpacity(.1)),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.black.withOpacity(.1)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -156,9 +138,7 @@ class _ContactHomeState extends State<ContactHomePages> {
                 width: 10,
               ),
               Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.black.withOpacity(.1)),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.black.withOpacity(.1)),
                 child: Stack(
                   children: [
                     IconButton(
@@ -220,25 +200,17 @@ class _ContactHomeState extends State<ContactHomePages> {
                 children: [
                   const Text(
                     'Contactos',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   InkWell(
-                    onTap: () {
-                      debugPrint('Siii');
-                    },
+                    onTap: () => navigateCreateContact(),
                     child: Ink(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       child: const Text(
                         'Contactos Nuevos',
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -254,13 +226,10 @@ class _ContactHomeState extends State<ContactHomePages> {
               TextField(
                 onChanged: (value) => _filterContact(value),
                 decoration: InputDecoration(
-                    contentPadding: const EdgeInsetsDirectional.symmetric(
-                        vertical: 10.0, horizontal: 15),
+                    contentPadding: const EdgeInsetsDirectional.symmetric(vertical: 10.0, horizontal: 15),
                     hintText: 'Buscar',
                     suffixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        borderSide: const BorderSide())),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0), borderSide: const BorderSide())),
               ),
             ],
           ),
@@ -268,22 +237,9 @@ class _ContactHomeState extends State<ContactHomePages> {
         buildlistContactsList(),
       ]),
       floatingActionButton: Container(
-        decoration: const BoxDecoration(shape: BoxShape.circle, boxShadow: [
-          BoxShadow(color: Colors.white, spreadRadius: 7, blurRadius: 1)
-        ]),
+        decoration: const BoxDecoration(shape: BoxShape.circle, boxShadow: [BoxShadow(color: Colors.white, spreadRadius: 7, blurRadius: 1)]),
         child: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(
-                    builder: (context) =>
-                        const FormContact(appBarTitle: 'Nuevo contacto')))
-                .then((value) => {
-                      countContactCreated(),
-                      isFilter = false,
-                      getAverage(),
-                      setState(() {})
-                    });
-          },
+          onPressed: () => navigateCreateContact(),
           child: const Icon(Icons.add),
         ),
       ),
@@ -387,8 +343,7 @@ class _ContactHomeState extends State<ContactHomePages> {
         elevation: .5,
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: Color((Random().nextDouble() * 0xFFFFFF).toInt())
-                .withOpacity(1.0),
+            backgroundColor: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
             child: Text(contact.nombres[0] + contact.apellidos[0]),
           ),
           title: Text("${contact.nombres} ${contact.apellidos}"),
@@ -474,8 +429,7 @@ class _ContactHomeState extends State<ContactHomePages> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      buildRecentlyUpdateContacts(
-                          contact.nombres, contact.updateAt),
+                      buildRecentlyUpdateContacts(contact.nombres, contact.updateAt),
                       SizedBox(
                         width: _availableScreenWidth * .03,
                       ),
@@ -493,9 +447,7 @@ class _ContactHomeState extends State<ContactHomePages> {
       children: [
         Container(
           width: _availableScreenWidth * .31,
-          decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(15)),
+          decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(15)),
           padding: const EdgeInsets.all(10),
           height: 60,
           child: const Icon(Icons.man),
@@ -504,40 +456,38 @@ class _ContactHomeState extends State<ContactHomePages> {
           height: 15,
         ),
         RichText(
-          text: TextSpan(
-              text: nombres,
-              style: const TextStyle(color: Colors.black, fontSize: 12),
-              children: [
-                TextSpan(
-                  text: fecha != null
-                      ? ' | ${fecha.toIso8601String().split('T').first}'
-                      : '',
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w300,
-                    fontSize: 10,
-                  ),
-                ),
-              ]),
+          text: TextSpan(text: nombres, style: const TextStyle(color: Colors.black, fontSize: 12), children: [
+            TextSpan(
+              text: fecha != null ? ' | ${fecha.toIso8601String().split('T').first}' : '',
+              style: const TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.w300,
+                fontSize: 10,
+              ),
+            ),
+          ]),
         ),
       ],
     );
+  }
+
+  void navigateCreateContact() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const FormContact(appBarTitle: 'Nuevo contacto')))
+        .then((value) => {countContactCreated(), isFilter = false, getAverage(), setState(() {})});
   }
 
   void navigateToDetail(Contact contact, String title) {
     //Navigator.pushNamed(context, FormContact.route, arguments: contact).then((value) => setState(() {}));
     Navigator.of(context)
         .push(MaterialPageRoute(
-          builder: (context) =>
-              FormContact(appBarTitle: title, contactEdit: contact),
+          builder: (context) => FormContact(appBarTitle: title, contactEdit: contact),
         ))
         .then((value) => {getAverage(), isFilter = false, setState(() {})});
   }
 
   void deleteById(int id) async {
-    await DatabaseHelper.instance
-        .deleteContact(id)
-        .then((value) => {countContactCreated(), getAverage()});
+    await DatabaseHelper.instance.deleteContact(id).then((value) => {countContactCreated(), getAverage()});
     //reloadContacts();
   }
 
@@ -548,12 +498,7 @@ class _ContactHomeState extends State<ContactHomePages> {
       result = listContact;
     } else {
       isFilter = true;
-      result = listContact
-          .where((element) => element.nombres
-              .toLowerCase()
-              .trim()
-              .contains(enterKeyboard.toLowerCase().trim()))
-          .toList();
+      result = listContact.where((element) => element.nombres.toLowerCase().trim().contains(enterKeyboard.toLowerCase().trim())).toList();
     }
 
     setState(() {
