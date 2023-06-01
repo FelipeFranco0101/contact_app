@@ -46,7 +46,7 @@ class FormContactState extends State<FormContact> {
           return Future(() => false);
         },
         child: Container(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(18.0),
           child: ListView(
             children: [
               Form(
@@ -71,7 +71,7 @@ class FormContactState extends State<FormContact> {
                             : null;
                       },
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: 12.0),
                     TextFormField(
                       controller: apellidosController,
                       decoration: InputDecoration(
@@ -89,7 +89,7 @@ class FormContactState extends State<FormContact> {
                             : null;
                       },
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: 12.0),
                     TextFormField(
                       keyboardType: TextInputType.number,
                       controller: telefonoController,
@@ -108,7 +108,7 @@ class FormContactState extends State<FormContact> {
                             : null;
                       },
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: 12.0),
                     TextFormField(
                       keyboardType: TextInputType.number,
                       controller: edadController,
@@ -132,7 +132,7 @@ class FormContactState extends State<FormContact> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: 12.0),
                     TextFormField(
                       controller: emailController,
                       decoration: InputDecoration(
@@ -155,51 +155,63 @@ class FormContactState extends State<FormContact> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: 12.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Expanded(
                           child: Column(
                             children: [
-                              CheckboxListTile(
-                                title: const Text('Leer'),
-                                value: hobbies.contains('Leer'),
-                                onChanged: (value) {
-                                  setState(() {
-                                    if (value!) {
-                                      hobbies.add('Leer');
-                                    } else {
-                                      hobbies.remove('Leer');
-                                    }
-                                  });
-                                },
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1.0),
+                                child: CheckboxListTile(
+                                  title: const Text('Leer'),
+                                  value: hobbies.contains('Leer'),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value!) {
+                                        hobbies.add('Leer');
+                                      } else {
+                                        hobbies.remove('Leer');
+                                      }
+                                    });
+                                  },
+                                ),
                               ),
-                              CheckboxListTile(
-                                title: const Text('Deportes'),
-                                value: hobbies.contains('Deportes'),
-                                onChanged: (value) {
-                                  setState(() {
-                                    if (value!) {
-                                      hobbies.add('Deportes');
-                                    } else {
-                                      hobbies.remove('Deportes');
-                                    }
-                                  });
-                                },
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1.0),
+                                child: CheckboxListTile(
+                                  title: const Text('Deportes'),
+                                  value: hobbies.contains('Deportes'),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value!) {
+                                        hobbies.add('Deportes');
+                                      } else {
+                                        hobbies.remove('Deportes');
+                                      }
+                                    });
+                                  },
+                                ),
                               ),
-                              CheckboxListTile(
-                                title: const Text('Cocinar'),
-                                value: hobbies.contains('Cocinar'),
-                                onChanged: (value) {
-                                  setState(() {
-                                    if (value!) {
-                                      hobbies.add('Cocinar');
-                                    } else {
-                                      hobbies.remove('Cocinar');
-                                    }
-                                  });
-                                },
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1.0),
+                                child: CheckboxListTile(
+                                  title: const Text('Cocinar'),
+                                  value: hobbies.contains('Cocinar'),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value!) {
+                                        hobbies.add('Cocinar');
+                                      } else {
+                                        hobbies.remove('Cocinar');
+                                      }
+                                    });
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -207,51 +219,63 @@ class FormContactState extends State<FormContact> {
                         Expanded(
                           child: Column(
                             children: [
-                              CheckboxListTile(
-                                title: const Text('Bailar'),
-                                value: hobbies.contains('Bailar'),
-                                onChanged: (value) {
-                                  setState(() {
-                                    if (value!) {
-                                      hobbies.add('Bailar');
-                                    } else {
-                                      hobbies.remove('Bailar');
-                                    }
-                                  });
-                                },
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1.0),
+                                child: CheckboxListTile(
+                                  title: const Text('Bailar'),
+                                  value: hobbies.contains('Bailar'),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value!) {
+                                        hobbies.add('Bailar');
+                                      } else {
+                                        hobbies.remove('Bailar');
+                                      }
+                                    });
+                                  },
+                                ),
                               ),
-                              CheckboxListTile(
-                                title: const Text('Viajar'),
-                                value: hobbies.contains('Viajar'),
-                                onChanged: (value) {
-                                  setState(() {
-                                    if (value!) {
-                                      hobbies.add('Viajar');
-                                    } else {
-                                      hobbies.remove('Viajar');
-                                    }
-                                  });
-                                },
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1.0),
+                                child: CheckboxListTile(
+                                  title: const Text('Viajar'),
+                                  value: hobbies.contains('Viajar'),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value!) {
+                                        hobbies.add('Viajar');
+                                      } else {
+                                        hobbies.remove('Viajar');
+                                      }
+                                    });
+                                  },
+                                ),
                               ),
-                              CheckboxListTile(
-                                title: const Text('Otros'),
-                                value: hobbies.contains('Otros'),
-                                onChanged: (value) {
-                                  setState(() {
-                                    if (value!) {
-                                      hobbies.add('Otros');
-                                    } else {
-                                      hobbies.remove('Otros');
-                                    }
-                                  });
-                                },
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1.0),
+                                child: CheckboxListTile(
+                                  title: const Text('Otros'),
+                                  value: hobbies.contains('Otros'),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value!) {
+                                        hobbies.add('Otros');
+                                      } else {
+                                        hobbies.remove('Otros');
+                                      }
+                                    });
+                                  },
+                                ),
                               ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: 12.0),
                   ],
                 ),
               ),
