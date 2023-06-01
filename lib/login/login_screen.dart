@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SvgPicture.asset(
                   'assets/icons/login.svg',
-                  height: size.height * 0.35,
+                  height: size.height * 0.20,
                 ),
                 SizedBox(
                   height: size.height * 0.03,
@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           validAuth(context);
                         },
-                        child: const Text('LOGIN'),
+                        child: const Text('Ingresar'),
                       ),
                     ),
                   ),
@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         }));
                       },
                       child: const Text(
-                        'Sign up',
+                        'Registrarse',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.blueGrey),

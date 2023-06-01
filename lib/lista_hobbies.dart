@@ -52,22 +52,18 @@ class _ListaHobbiesPageState extends State<ListaHobbiesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lista de Hobbies'),
-      ),
-      body: ListView.builder(
-        itemCount: _hobbies.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            child: ListTile(
-              title: Text(_hobbies[index].name),
-              subtitle: Text(
-                  'Número de Personas: ${_hobbies[index].likes.toString()}'),
+    return ListView.builder(
+      itemCount: _hobbies.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Card(
+          child: ListTile(
+            title: Text(_hobbies[index].name),
+            subtitle: Text(
+              'Número de Personas: ${_hobbies[index].likes.toString()}',
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

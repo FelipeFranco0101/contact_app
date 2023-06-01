@@ -12,45 +12,46 @@ class Body extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return Background(
-        child: SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Bienvenido',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-                color: Colors.blueAccent),
-          ),
-          SizedBox(
-            height: size.height * 0.03,
-          ),
-          SvgPicture.asset(
-            'assets/icons/chat.svg',
-            height: size.height * 0.40,
-          ),
-          SizedBox(
-            height: size.height * 0.03,
-          ),
-          RoundedButton(
-            text: 'Iniciar Sesión',
-            press: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const LoginScreen();
-              }));
-            },
-          ),
-          RoundedButton(
-              text: 'Registrarse',
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Bienvenido',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                  color: Colors.blueAccent),
+            ),
+            SizedBox(
+              height: size.height * 0.03,
+            ),
+            SvgPicture.asset(
+              'assets/icons/chat.svg',
+              height: size.height * 0.40,
+            ),
+            SizedBox(
+              height: size.height * 0.03,
+            ),
+            RoundedButton(
+              text: 'Iniciar Sesión',
               press: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  return const SignUp();
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const LoginScreen();
                 }));
-              }),
-        ],
+              },
+            ),
+            RoundedButton(
+                text: 'Registrarse',
+                press: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    return const SignUp();
+                  }));
+                }),
+          ],
+        ),
       ),
-    ));
+    );
   }
 }
 
