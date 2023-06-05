@@ -15,14 +15,15 @@ void createDatabase() async {
   WidgetsFlutterBinding.ensureInitialized();
   databaseHelper = DatabaseHelper.instance;
   // Inicializar la base de datos
-  await DatabaseHelper.instance.initializeDB().then((value) => database = value);
+  await DatabaseHelper.instance
+      .initializeDB()
+      .then((value) => database = value);
   databaseHelper.initializeDB().then((value) => database = value);
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(

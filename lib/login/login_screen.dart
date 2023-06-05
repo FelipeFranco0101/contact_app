@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'LOGIN',
+                  'INGRESAR',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -120,20 +120,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 )
-                /*const TextFieldContainer(
-                    child: TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      hintText: 'Contraseña',
-                      icon: Icon(
-                        Icons.lock,
-                        color: Colors.amber,
-                      ),
-                      suffixIcon: Icon(
-                        Icons.visibility,
-                        color: Colors.amber,
-                      )),
-                ))*/
               ],
             ),
           )
@@ -162,65 +148,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-/*class InputsLogin extends StatelessWidget {
-  final String hintText;
-  final IconData iconData;
-  final IconData? suffixIconData;
-  final ValueChanged<String> onChanged;
-  final bool obscureText;
-  final TextEditingController textEditingController;
-  const InputsLogin({
-    super.key,
-    required this.hintText,
-    required this.iconData,
-    required this.onChanged,
-    this.obscureText = false,
-    this.suffixIconData,
-    required this.textEditingController,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFieldContainer(
-      child: TextField(
-        controller: textEditingController,
-        obscureText: obscureText,
-        onChanged: onChanged,
-        decoration: InputDecoration(
-            icon: Icon(
-              iconData,
-              color: Colors.blue,
-            ),
-            suffixIcon: Icon(
-              suffixIconData,
-              color: Colors.blue,
-            ),
-            hintText: hintText,
-            border: InputBorder.none),
-      ),
-    );
-  }
-}
-
-class TextFieldContainer extends StatelessWidget {
-  final Widget child;
-  const TextFieldContainer({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      width: size.width * 0.8,
-      decoration: BoxDecoration(color: Colors.blue.shade100, borderRadius: BorderRadius.circular(30)),
-      child: child,
-    );
-  }
-}
-*/
