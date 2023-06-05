@@ -58,6 +58,10 @@ class FormContactState extends State<FormContact> {
           },
           child: Container(
             padding: const EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(10.0),
+            ),
             child: ListView(
               children: [
                 Form(
@@ -70,7 +74,9 @@ class FormContactState extends State<FormContact> {
                         decoration: InputDecoration(
                             labelText: 'Nombres',
                             prefixIcon: const Icon(Icons.person),
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear),
                               onPressed: nombresController.clear,
@@ -87,7 +93,9 @@ class FormContactState extends State<FormContact> {
                         decoration: InputDecoration(
                             labelText: 'Apellidos',
                             prefixIcon: const Icon(Icons.person_2_outlined),
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear),
                               onPressed: apellidosController.clear,
@@ -106,7 +114,9 @@ class FormContactState extends State<FormContact> {
                             labelText: 'Telefono',
                             prefixIcon:
                                 const Icon(Icons.phone_android_outlined),
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear),
                               onPressed: telefonoController.clear,
@@ -125,7 +135,9 @@ class FormContactState extends State<FormContact> {
                             labelText: 'Edad',
                             prefixIcon:
                                 const Icon(Icons.access_time_filled_outlined),
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear),
                               onPressed: edadController.clear,
@@ -146,7 +158,9 @@ class FormContactState extends State<FormContact> {
                         decoration: InputDecoration(
                           labelText: 'Email',
                           prefixIcon: const Icon(Icons.email_outlined),
-                          border: const OutlineInputBorder(),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.clear),
                             onPressed: emailController.clear,

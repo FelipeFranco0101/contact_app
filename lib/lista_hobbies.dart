@@ -60,10 +60,28 @@ class _ListaHobbiesPageState extends State<ListaHobbiesPage> {
         itemCount: _hobbies.length,
         itemBuilder: (BuildContext context, int index) {
           return Card(
+            margin: const EdgeInsets.only(bottom: 8),
+            elevation: .5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            color: Colors.grey[100],
             child: ListTile(
-              title: Text(_hobbies[index].name),
-              subtitle: Text(
-                  'Número de Personas: ${_hobbies[index].likes.toString()}'),
+              title: Text(
+                _hobbies[index].name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Row(
+                children: [
+                  const Icon(Icons.people),
+                  const SizedBox(width: 5),
+                  Text(
+                    _hobbies[index].likes.toString(),
+                  ),
+                ],
+              ),
             ),
           );
         },

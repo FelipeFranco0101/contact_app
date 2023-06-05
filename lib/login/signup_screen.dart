@@ -51,7 +51,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   SvgPicture.asset(
                     'assets/icons/signup.svg',
-                    height: size.height * 0.35,
+                    height: size.height * 0.25,
                   ),
                   InputsLogin(
                     hintText: 'Usuario',
